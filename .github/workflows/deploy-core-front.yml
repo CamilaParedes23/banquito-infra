@@ -1,0 +1,30 @@
+name: Deploy Core Frontend
+
+on:
+  workflow_dispatch:
+    inputs:
+      service:
+        description: "Servicio Core Frontend a desplegar (all, banca-web, ventanilla-frontend)"
+        required: true
+        default: "all"
+
+  repository_dispatch:
+    types: [deploy-core-front]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy Core Frontend services
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            cd /home/${{ secrets.VM_USER }}/banquito-infra
+            SERVICE="${{ github.event.client_payload.service || github.event.inputs.service }}"
+            bash scripts/deploy-core-front.sh "$SERVICE"

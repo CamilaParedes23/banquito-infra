@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  # Core Frontend Services
+  core-banca-web:
+    image: ${DOCKER_USERNAME:-banquito}/banquito-core-banca-web:latest
+    container_name: banquito-core-banca-web
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_API_URL=http://localhost:8090
+    env_file:
+      - .env
+    networks:
+      - banquito
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3000" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  core-ventanilla-frontend:
+    image: ${DOCKER_USERNAME:-banquito}/banquito-core-ventanilla-frontend:latest
+    container_name: banquito-core-ventanilla-frontend
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_API_URL=http://localhost:8090
+    env_file:
+      - .env
+    networks:
+      - banquito
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3000" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  banquito:
+    driver: bridge

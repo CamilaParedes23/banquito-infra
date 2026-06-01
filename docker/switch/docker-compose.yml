@@ -1,0 +1,127 @@
+version: '3.8'
+
+services:
+  # Switch Backend Services
+  sw-enrutamiento:
+    image: ${DOCKER_USERNAME:-banquito}/banquito-sw-enrutamiento:latest
+    container_name: banquito-sw-enrutamiento
+    ports:
+      - "8086:8086"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8086
+    env_file:
+      - .env
+    networks:
+      - banquito
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8086/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  sw-facturacion:
+    image: ${DOCKER_USERNAME:-banquito}/banquito-sw-facturacion:latest
+    container_name: banquito-sw-facturacion
+    ports:
+      - "8087:8087"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8087
+    env_file:
+      - .env
+    networks:
+      - banquito
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8087/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  sw-lotes:
+    image: ${DOCKER_USERNAME:-banquito}/banquito-sw-lotes:latest
+    container_name: banquito-sw-lotes
+    ports:
+      - "8088:8088"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8088
+    env_file:
+      - .env
+    networks:
+      - banquito
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8088/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  sw-pagos-internos:
+    image: ${DOCKER_USERNAME:-banquito}/banquito-sw-pagos-internos:latest
+    container_name: banquito-sw-pagos-internos
+    ports:
+      - "8089:8089"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8089
+    env_file:
+      - .env
+    networks:
+      - banquito
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8089/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  sw-pagos-externos:
+    image: ${DOCKER_USERNAME:-banquito}/banquito-sw-pagos-externos:latest
+    container_name: banquito-sw-pagos-externos
+    ports:
+      - "8091:8091"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8091
+    env_file:
+      - .env
+    networks:
+      - banquito
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8091/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  sw-api-gateway:
+    image: ${DOCKER_USERNAME:-banquito}/banquito-sw-api-gateway:latest
+    container_name: banquito-sw-api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8080
+    env_file:
+      - .env
+    networks:
+      - banquito
+    restart: unless-stopped
+    depends_on:
+      - sw-enrutamiento
+      - sw-facturacion
+      - sw-lotes
+      - sw-pagos-internos
+      - sw-pagos-externos
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  banquito:
+    driver: bridge

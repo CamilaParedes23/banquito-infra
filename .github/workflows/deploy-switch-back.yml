@@ -1,0 +1,30 @@
+name: Deploy Switch Backend
+
+on:
+  workflow_dispatch:
+    inputs:
+      service:
+        description: "Servicio Switch a desplegar (all, enrutamiento, facturacion, lotes, pagos-internos, pagos-externos, api-gateway)"
+        required: true
+        default: "all"
+
+  repository_dispatch:
+    types: [deploy-switch-back]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy Switch Backend services
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.GCP_VM_HOST }}
+          username: ${{ secrets.GCP_VM_USER }}
+          key: ${{ secrets.GCP_SSH_KEY }}
+          script: |
+            cd /home/${{ secrets.GCP_VM_USER }}/banquito-infra
+            SERVICE="${{ github.event.client_payload.service || github.event.inputs.service }}"
+            bash scripts/deploy-switch.sh "$SERVICE"

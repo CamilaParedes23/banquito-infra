@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  # Switch Frontend Service
+  sw-frontend:
+    image: ${DOCKER_USERNAME:-banquito}/banquito-sw-frontend:latest
+    container_name: banquito-sw-frontend
+    ports:
+      - "3002:3000"
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_API_URL=http://localhost:8080
+    env_file:
+      - .env
+    networks:
+      - banquito
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3000" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  banquito:
+    driver: bridge

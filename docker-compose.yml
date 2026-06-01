@@ -1,0 +1,322 @@
+version: '3.8'
+
+# Master docker-compose para orquestar todos los servicios de Banquito
+# Nota: Este archivo es opcional, puedes usar los compose individuales por subsistema
+
+services:
+  # ============================================
+  # CORE BACKEND SERVICES (Puerto 8081-8090)
+  # ============================================
+  
+  core-ventanilla:
+    image: ${DOCKER_USERNAME:-banquito}/banquito-core-ventanilla:latest
+    container_name: banquito-core-ventanilla
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8081
+    env_file:
+      - docker/core/.env
+    networks:
+      - banquito
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8081/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  core-contable:
+    image: ${DOCKER_USERNAME:-banquito}/banquito-core-contable:latest
+    container_name: banquito-core-contable
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8082
+    env_file:
+      - docker/core/.env
+    networks:
+      - banquito
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8082/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  core-admin:
+    image: ${DOCKER_USERNAME:-banquito}/banquito-core-admin:latest
+    container_name: banquito-core-admin
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8083
+    env_file:
+      - docker/core/.env
+    networks:
+      - banquito
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8083/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  core-clientes:
+    image: ${DOCKER_USERNAME:-banquito}/banquito-core-clientes:latest
+    container_name: banquito-core-clientes
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8084
+    env_file:
+      - docker/core/.env
+    networks:
+      - banquito
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8084/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  core-transaccional:
+    image: ${DOCKER_USERNAME:-banquito}/banquito-core-transaccional:latest
+    container_name: banquito-core-transaccional
+    ports:
+      - "8085:8085"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8085
+    env_file:
+      - docker/core/.env
+    networks:
+      - banquito
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8085/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  core-api-gateway:
+    image: ${DOCKER_USERNAME:-banquito}/banquito-core-api-gateway:latest
+    container_name: banquito-core-api-gateway
+    ports:
+      - "8090:8090"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8090
+    env_file:
+      - docker/core/.env
+    networks:
+      - banquito
+    restart: unless-stopped
+    depends_on:
+      - core-ventanilla
+      - core-contable
+      - core-admin
+      - core-clientes
+      - core-transaccional
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8090/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ============================================
+  # CORE FRONTEND SERVICES (Puerto 3000-3001)
+  # ============================================
+
+  core-banca-web:
+    image: ${DOCKER_USERNAME:-banquito}/banquito-core-banca-web:latest
+    container_name: banquito-core-banca-web
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_API_URL=http://localhost:8090
+    env_file:
+      - docker/core-frontend/.env
+    networks:
+      - banquito
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3000" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  core-ventanilla-frontend:
+    image: ${DOCKER_USERNAME:-banquito}/banquito-core-ventanilla-frontend:latest
+    container_name: banquito-core-ventanilla-frontend
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_API_URL=http://localhost:8090
+    env_file:
+      - docker/core-frontend/.env
+    networks:
+      - banquito
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3000" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ============================================
+  # SWITCH BACKEND SERVICES (Puerto 8080, 8086-8091)
+  # ============================================
+
+  sw-enrutamiento:
+    image: ${DOCKER_USERNAME:-banquito}/banquito-sw-enrutamiento:latest
+    container_name: banquito-sw-enrutamiento
+    ports:
+      - "8086:8086"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8086
+    env_file:
+      - docker/switch/.env
+    networks:
+      - banquito
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8086/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  sw-facturacion:
+    image: ${DOCKER_USERNAME:-banquito}/banquito-sw-facturacion:latest
+    container_name: banquito-sw-facturacion
+    ports:
+      - "8087:8087"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8087
+    env_file:
+      - docker/switch/.env
+    networks:
+      - banquito
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8087/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  sw-lotes:
+    image: ${DOCKER_USERNAME:-banquito}/banquito-sw-lotes:latest
+    container_name: banquito-sw-lotes
+    ports:
+      - "8088:8088"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8088
+    env_file:
+      - docker/switch/.env
+    networks:
+      - banquito
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8088/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  sw-pagos-internos:
+    image: ${DOCKER_USERNAME:-banquito}/banquito-sw-pagos-internos:latest
+    container_name: banquito-sw-pagos-internos
+    ports:
+      - "8089:8089"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8089
+    env_file:
+      - docker/switch/.env
+    networks:
+      - banquito
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8089/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  sw-pagos-externos:
+    image: ${DOCKER_USERNAME:-banquito}/banquito-sw-pagos-externos:latest
+    container_name: banquito-sw-pagos-externos
+    ports:
+      - "8091:8091"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8091
+    env_file:
+      - docker/switch/.env
+    networks:
+      - banquito
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8091/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  sw-api-gateway:
+    image: ${DOCKER_USERNAME:-banquito}/banquito-sw-api-gateway:latest
+    container_name: banquito-sw-api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8080
+    env_file:
+      - docker/switch/.env
+    networks:
+      - banquito
+    restart: unless-stopped
+    depends_on:
+      - sw-enrutamiento
+      - sw-facturacion
+      - sw-lotes
+      - sw-pagos-internos
+      - sw-pagos-externos
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ============================================
+  # SWITCH FRONTEND SERVICE (Puerto 3002)
+  # ============================================
+
+  sw-frontend:
+    image: ${DOCKER_USERNAME:-banquito}/banquito-sw-frontend:latest
+    container_name: banquito-sw-frontend
+    ports:
+      - "3002:3000"
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_API_URL=http://localhost:8080
+    env_file:
+      - docker/switch-frontend/.env
+    networks:
+      - banquito
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3000" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  banquito:
+    driver: bridge
