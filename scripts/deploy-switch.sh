@@ -15,7 +15,7 @@ echo -e "${YELLOW}📦 Servicio: $SERVICE${NC}"
 
 cd "$(dirname "$0")/../docker/switch"
 
-# Validar que docker y docker-compose existan
+# Validar que docker y docker compose existan
 if ! command -v docker &> /dev/null; then
     echo -e "${RED}❌ Docker no está instalado${NC}"
     exit 1
@@ -30,13 +30,13 @@ fi
 deploy_service() {
     local svc=$1
     echo -e "${YELLOW}📥 Tirando imagen: $svc${NC}"
-    docker-compose pull "$svc" || {
+    docker compose pull "$svc" || {
         echo -e "${RED}❌ Error al tirar imagen: $svc${NC}"
         return 1
     }
     
     echo -e "${YELLOW}🔄 Reiniciando contenedor: $svc${NC}"
-    docker-compose up -d "$svc" || {
+    docker compose up -d "$svc" || {
         echo -e "${RED}❌ Error al iniciar contenedor: $svc${NC}"
         return 1
     }
@@ -48,26 +48,26 @@ deploy_service() {
 case "$SERVICE" in
     all)
         echo -e "${YELLOW}📋 Desplegando TODOS los servicios Switch Backend...${NC}"
-        docker-compose pull
-        docker-compose up -d
+        docker compose pull
+        docker compose up -d
         echo -e "${GREEN}✅ Todos los servicios desplegados${NC}"
         ;;
-    enrutamiento)
+    banquito-sw-enrutamiento|sw-enrutamiento)
         deploy_service "sw-enrutamiento"
         ;;
-    facturacion)
+    banquito-sw-facturacion|sw-facturacion)
         deploy_service "sw-facturacion"
         ;;
-    lotes)
+    banquito-sw-lotes|sw-lotes)
         deploy_service "sw-lotes"
         ;;
-    pagos-internos)
+    banquito-sw-pagos-internos|sw-pagos-internos)
         deploy_service "sw-pagos-internos"
         ;;
-    pagos-externos)
+    banquito-sw-pagos-externos|sw-pagos-externos)
         deploy_service "sw-pagos-externos"
         ;;
-    api-gateway)
+    banquito-sw-api-gateway|sw-api-gateway)
         deploy_service "sw-api-gateway"
         ;;
     *)
@@ -79,4 +79,4 @@ esac
 
 echo -e "${GREEN}✅ Despliegue completado${NC}"
 echo -e "\n${YELLOW}📋 Estado de contenedores:${NC}"
-docker-compose ps
+docker compose ps
