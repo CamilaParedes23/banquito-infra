@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # Core Backend Services
   core-ventanilla:
-    image: ${DOCKER_USERNAME:-banquito}/banquito-core-ventanilla:latest
+    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-ventanilla:latest
     container_name: banquito-core-ventanilla
     ports:
       - "8081:8081"
@@ -22,7 +22,7 @@ services:
       retries: 3
 
   core-contable:
-    image: ${DOCKER_USERNAME:-banquito}/banquito-core-contable:latest
+    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-contable:latest
     container_name: banquito-core-contable
     ports:
       - "8082:8082"
@@ -41,7 +41,7 @@ services:
       retries: 3
 
   core-admin:
-    image: ${DOCKER_USERNAME:-banquito}/banquito-core-admin:latest
+    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-admin:latest
     container_name: banquito-core-admin
     ports:
       - "8083:8083"
@@ -60,7 +60,7 @@ services:
       retries: 3
 
   core-clientes:
-    image: ${DOCKER_USERNAME:-banquito}/banquito-core-clientes:latest
+    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-clientes:latest
     container_name: banquito-core-clientes
     ports:
       - "8084:8084"
@@ -79,7 +79,7 @@ services:
       retries: 3
 
   core-transaccional:
-    image: ${DOCKER_USERNAME:-banquito}/banquito-core-transaccional:latest
+    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-transaccional:latest
     container_name: banquito-core-transaccional
     ports:
       - "8085:8085"
@@ -98,7 +98,7 @@ services:
       retries: 3
 
   core-api-gateway:
-    image: ${DOCKER_USERNAME:-banquito}/banquito-core-api-gateway:latest
+    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-api-gateway:latest
     container_name: banquito-core-api-gateway
     ports:
       - "8090:8090"

@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # Switch Backend Services
   sw-enrutamiento:
-    image: ${DOCKER_USERNAME:-banquito}/banquito-sw-enrutamiento:latest
+    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-sw-enrutamiento:latest
     container_name: banquito-sw-enrutamiento
     ports:
       - "8086:8086"
@@ -22,7 +22,7 @@ services:
       retries: 3
 
   sw-facturacion:
-    image: ${DOCKER_USERNAME:-banquito}/banquito-sw-facturacion:latest
+    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-sw-facturacion:latest
     container_name: banquito-sw-facturacion
     ports:
       - "8087:8087"
@@ -41,7 +41,7 @@ services:
       retries: 3
 
   sw-lotes:
-    image: ${DOCKER_USERNAME:-banquito}/banquito-sw-lotes:latest
+    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-sw-lotes:latest
     container_name: banquito-sw-lotes
     ports:
       - "8088:8088"
@@ -60,7 +60,7 @@ services:
       retries: 3
 
   sw-pagos-internos:
-    image: ${DOCKER_USERNAME:-banquito}/banquito-sw-pagos-internos:latest
+    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-sw-pagos-internos:latest
     container_name: banquito-sw-pagos-internos
     ports:
       - "8089:8089"
@@ -79,7 +79,7 @@ services:
       retries: 3
 
   sw-pagos-externos:
-    image: ${DOCKER_USERNAME:-banquito}/banquito-sw-pagos-externos:latest
+    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-sw-pagos-externos:latest
     container_name: banquito-sw-pagos-externos
     ports:
       - "8091:8091"
@@ -98,7 +98,7 @@ services:
       retries: 3
 
   sw-api-gateway:
-    image: ${DOCKER_USERNAME:-banquito}/banquito-sw-api-gateway:latest
+    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-sw-api-gateway:latest
     container_name: banquito-sw-api-gateway
     ports:
       - "8080:8080"
