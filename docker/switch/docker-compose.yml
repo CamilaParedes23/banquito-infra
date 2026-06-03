@@ -115,7 +115,7 @@ services:
       - sw-facturacion
       - sw-lotes
       - sw-pagos-internos
-      - sw-pagos-externos
+      #- sw-pagos-externos
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
       interval: 30s

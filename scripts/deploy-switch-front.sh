@@ -15,13 +15,13 @@ echo -e "${YELLOW}📦 Servicio: $SERVICE${NC}"
 
 cd "$(dirname "$0")/../docker/switch-frontend"
 
-# Validar que docker y docker-compose existan
+# Validar que docker y docker compose existan
 if ! command -v docker &> /dev/null; then
     echo -e "${RED}❌ Docker no está instalado${NC}"
     exit 1
 fi
 
-if ! command -v docker-compose &> /dev/null; then
+if ! command -v docker compose &> /dev/null; then
     echo -e "${RED}❌ Docker Compose no está instalado${NC}"
     exit 1
 fi
@@ -30,13 +30,13 @@ fi
 deploy_service() {
     local svc=$1
     echo -e "${YELLOW}📥 Tirando imagen: $svc${NC}"
-    docker-compose pull "$svc" || {
+    docker compose pull "$svc" || {
         echo -e "${RED}❌ Error al tirar imagen: $svc${NC}"
         return 1
     }
     
     echo -e "${YELLOW}🔄 Reiniciando contenedor: $svc${NC}"
-    docker-compose up -d "$svc" || {
+    docker compose up -d "$svc" || {
         echo -e "${RED}❌ Error al iniciar contenedor: $svc${NC}"
         return 1
     }
@@ -48,8 +48,8 @@ deploy_service() {
 case "$SERVICE" in
     all|sw-frontend)
         echo -e "${YELLOW}📋 Desplegando Switch Frontend...${NC}"
-        docker-compose pull
-        docker-compose up -d
+        docker compose pull
+        docker compose up -d
         echo -e "${GREEN}✅ Switch Frontend desplegado${NC}"
         ;;
     *)
@@ -61,4 +61,4 @@ esac
 
 echo -e "${GREEN}✅ Despliegue completado${NC}"
 echo -e "\n${YELLOW}📋 Estado de contenedores:${NC}"
-docker-compose ps
+docker compose ps

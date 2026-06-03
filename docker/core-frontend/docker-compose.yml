@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # Core Frontend Services
   core-banca-web:
-    image: ${DOCKER_USERNAME:-banquito}/banquito-core-banca-web:latest
+    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-banca-web:latest
     container_name: banquito-core-banca-web
     ports:
       - "3000:3000"
@@ -22,7 +22,7 @@ services:
       retries: 3
 
   core-ventanilla-frontend:
-    image: ${DOCKER_USERNAME:-banquito}/banquito-core-ventanilla-frontend:latest
+    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-ventanilla-frontend:latest
     container_name: banquito-core-ventanilla-frontend
     ports:
       - "3001:3000"

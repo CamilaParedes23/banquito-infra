@@ -18,14 +18,14 @@ cd "$(dirname "$0")/../docker/core"
 case "$SERVICE" in
     all)
         echo -e "${YELLOW}📋 Reiniciando TODOS los servicios...${NC}"
-        docker-compose restart
+        docker compose restart
         ;;
     *)
         echo -e "${YELLOW}Reiniciando servicio: $SERVICE${NC}"
-        docker-compose restart "$SERVICE"
+        docker compose restart "$SERVICE"
         ;;
 esac
 
 echo -e "${GREEN}✅ Reinicio completado${NC}"
 echo -e "\n${YELLOW}📋 Estado de contenedores:${NC}"
-docker-compose ps
+docker compose ps
