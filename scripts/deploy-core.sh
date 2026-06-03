@@ -52,23 +52,23 @@ case "$SERVICE" in
         docker compose up -d
         echo -e "${GREEN}✅ Todos los servicios desplegados${NC}"
         ;;
-    ventanilla)
-        deploy_service "core-ventanilla"
+    banquito-core-ventanilla)
+        deploy_service "banquito-core-ventanilla"
         ;;
-    contable)
-        deploy_service "core-contable"
+    banquito-core-contable)
+        deploy_service "banquito-core-contable"
         ;;
-    admin)
-        deploy_service "core-admin"
+    banquito-core-admin)
+        deploy_service "banquito-core-admin"
         ;;
-    clientes)
-        deploy_service "core-clientes"
+    banquito-core-clientes)
+        deploy_service "banquito-core-clientes"
         ;;
-    transaccional)
-        deploy_service "core-transaccional"
+    banquito-core-transaccional)
+        deploy_service "banquito-core-transaccional"
         ;;
-    api-gateway)
-        deploy_service "core-api-gateway"
+    banquito-core-api-gateway)
+        deploy_service "banquito-core-api-gateway"
         ;;
     *)
         echo -e "${RED}❌ Servicio no reconocido: $SERVICE${NC}"
