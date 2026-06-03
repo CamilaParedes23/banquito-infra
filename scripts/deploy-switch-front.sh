@@ -46,7 +46,7 @@ deploy_service() {
 
 # Desplegar según servicio
 case "$SERVICE" in
-    all|sw-frontend)
+    all|banquito-sw-frontend)
         echo -e "${YELLOW}📋 Desplegando Switch Frontend...${NC}"
         docker compose pull
         docker compose up -d
