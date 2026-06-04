@@ -111,11 +111,11 @@ services:
       - banquito
     restart: unless-stopped
     depends_on:
-      - core-ventanilla
-      - core-contable
-      - core-admin
-      - core-clientes
-      - core-transaccional
+      - banquito-core-ventanilla
+      - banquito-core-contable
+      - banquito-core-admin
+      - banquito-core-clientes
+      - banquito-core-transaccional
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8090/actuator/health" ]
       interval: 30s
