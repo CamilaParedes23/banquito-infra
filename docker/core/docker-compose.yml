@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   # Core Backend Services
-  banquito-core-ventanilla:
+  core-ventanilla:
     image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-ventanilla:latest
     container_name: banquito-core-ventanilla
     ports:
@@ -21,7 +21,7 @@ services:
       timeout: 10s
       retries: 3
 
-  banquito-core-contable:
+  core-contable:
     image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-contable:latest
     container_name: banquito-core-contable
     ports:
@@ -40,7 +40,7 @@ services:
       timeout: 10s
       retries: 3
 
-  banquito-core-admin:
+  core-admin:
     image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-admin:latest
     container_name: banquito-core-admin
     ports:
@@ -59,7 +59,7 @@ services:
       timeout: 10s
       retries: 3
 
-  banquito-core-clientes:
+  core-clientes:
     image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-clientes:latest
     container_name: banquito-core-clientes
     ports:
@@ -78,7 +78,7 @@ services:
       timeout: 10s
       retries: 3
 
-  banquito-core-transaccional:
+  core-transaccional:
     image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-transaccional:latest
     container_name: banquito-core-transaccional
     ports:
@@ -97,7 +97,7 @@ services:
       timeout: 10s
       retries: 3
 
-  banquito-core-api-gateway:
+  core-api-gateway:
     image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-api-gateway:latest
     container_name: banquito-core-api-gateway
     ports:
@@ -111,11 +111,11 @@ services:
       - banquito
     restart: unless-stopped
     depends_on:
-      - banquito-core-ventanilla
-      - banquito-core-contable
-      - banquito-core-admin
-      - banquito-core-clientes
-      - banquito-core-transaccional
+      - core-ventanilla
+      - core-contable
+      - core-admin
+      - core-clientes
+      - core-transaccional
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8090/actuator/health" ]
       interval: 30s

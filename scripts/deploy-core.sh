@@ -52,22 +52,22 @@ case "$SERVICE" in
         docker compose up -d
         echo -e "${GREEN} Todos los servicios desplegados${NC}"
         ;;
-    banquito-core-ventanilla)
+    banquito-core-ventanilla|core-ventanilla)
         deploy_service "core-ventanilla"
         ;;
-    banquito-core-contable)
+    banquito-core-contable|core-contable)
         deploy_service "core-contable"
         ;;
-    banquito-core-admin)
+    banquito-core-admin|core-admin)
         deploy_service "core-admin"
         ;;
-    banquito-core-clientes)
+    banquito-core-clientes|core-clientes)
         deploy_service "core-clientes"
         ;;
-    banquito-core-transaccional)
+    banquito-core-transaccional|core-transaccional)
         deploy_service "core-transaccional"
         ;;
-    banquito-core-api-gateway)
+    banquito-core-api-gateway|core-api-gateway)
         deploy_service "core-api-gateway"
         ;;
     *)
