@@ -10,73 +10,73 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-echo -e "${YELLOW}🚀 Desplegando Banquito Switch Backend...${NC}"
-echo -e "${YELLOW}📦 Servicio: $SERVICE${NC}"
+echo -e "${YELLOW} Desplegando Banquito Switch Backend...${NC}"
+echo -e "${YELLOW} Servicio: $SERVICE${NC}"
 
 cd "$(dirname "$0")/../docker/switch"
 
 # Validar que docker y docker compose existan
 if ! command -v docker &> /dev/null; then
-    echo -e "${RED}❌ Docker no está instalado${NC}"
+    echo -e "${RED} Docker no está instalado${NC}"
     exit 1
 fi
 
 if ! command -v docker compose &> /dev/null; then
-    echo -e "${RED}❌ Docker Compose no está instalado${NC}"
+    echo -e "${RED} Docker Compose no está instalado${NC}"
     exit 1
 fi
 
 # Función para desplegar servicio específico
 deploy_service() {
     local svc=$1
-    echo -e "${YELLOW}📥 Tirando imagen: $svc${NC}"
+    echo -e "${YELLOW} Tirando imagen: $svc${NC}"
     docker compose pull "$svc" || {
         echo -e "${RED}❌ Error al tirar imagen: $svc${NC}"
         return 1
     }
     
-    echo -e "${YELLOW}🔄 Reiniciando contenedor: $svc${NC}"
+    echo -e "${YELLOW} Reiniciando contenedor: $svc${NC}"
     docker compose up -d "$svc" || {
-        echo -e "${RED}❌ Error al iniciar contenedor: $svc${NC}"
+        echo -e "${RED} Error al iniciar contenedor: $svc${NC}"
         return 1
     }
     
-    echo -e "${GREEN}✅ $svc desplegado exitosamente${NC}"
+    echo -e "${GREEN} $svc desplegado exitosamente${NC}"
 }
 
 # Desplegar según servicio
 case "$SERVICE" in
     all)
-        echo -e "${YELLOW}📋 Desplegando TODOS los servicios Switch Backend...${NC}"
+        echo -e "${YELLOW} Desplegando TODOS los servicios Switch Backend...${NC}"
         docker compose pull
         docker compose up -d
-        echo -e "${GREEN}✅ Todos los servicios desplegados${NC}"
+        echo -e "${GREEN} Todos los servicios desplegados${NC}"
         ;;
-    banquito-sw-enrutamiento|sw-enrutamiento)
-        deploy_service "sw-enrutamiento"
+    banquito-sw-enrutamiento)
+        deploy_service "banquito-sw-enrutamiento"
         ;;
-    banquito-sw-facturacion|sw-facturacion)
-        deploy_service "sw-facturacion"
+    banquito-sw-facturacion)
+        deploy_service "banquito-sw-facturacion"
         ;;
-    banquito-sw-lotes|sw-lotes)
-        deploy_service "sw-lotes"
+    banquito-sw-lotes)
+        deploy_service "banquito-sw-lotes"
         ;;
-    banquito-sw-pagos-internos|sw-pagos-internos)
-        deploy_service "sw-pagos-internos"
+    banquito-sw-pagos-internos)
+        deploy_service "banquito-sw-pagos-internos"
         ;;
-    banquito-sw-pagos-externos|sw-pagos-externos)
-        deploy_service "sw-pagos-externos"
+    banquito-sw-pagos-externos)
+        deploy_service "banquito-sw-pagos-externos"
         ;;
-    banquito-sw-api-gateway|sw-api-gateway)
-        deploy_service "sw-api-gateway"
+    banquito-sw-api-gateway)
+        deploy_service "banquito-sw-api-gateway"
         ;;
     *)
-        echo -e "${RED}❌ Servicio no reconocido: $SERVICE${NC}"
-        echo -e "${YELLOW}Servicios disponibles: all, enrutamiento, facturacion, lotes, pagos-internos, pagos-externos, api-gateway${NC}"
+        echo -e "${RED} Servicio no reconocido: $SERVICE${NC}"
+        echo -e "${YELLOW}Servicios disponibles: all, banquito-sw-enrutamiento, banquito-sw-facturacion, banquito-sw-lotes, banquito-sw-pagos-internos, banquito-sw-pagos-externos, banquito-sw-api-gateway${NC}"
         exit 1
         ;;
 esac
 
-echo -e "${GREEN}✅ Despliegue completado${NC}"
-echo -e "\n${YELLOW}📋 Estado de contenedores:${NC}"
+echo -e "${GREEN} Despliegue completado${NC}"
+echo -e "\n${YELLOW} Estado de contenedores:${NC}"
 docker compose ps

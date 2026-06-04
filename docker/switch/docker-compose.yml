@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   # Switch Backend Services
-  sw-enrutamiento:
+  banquito-sw-enrutamiento:
     image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-sw-enrutamiento:latest
     container_name: banquito-sw-enrutamiento
     ports:
@@ -21,7 +21,7 @@ services:
       timeout: 10s
       retries: 3
 
-  sw-facturacion:
+  banquito-sw-facturacion:
     image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-sw-facturacion:latest
     container_name: banquito-sw-facturacion
     ports:
@@ -40,7 +40,7 @@ services:
       timeout: 10s
       retries: 3
 
-  sw-lotes:
+  banquito-sw-lotes:
     image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-sw-lotes:latest
     container_name: banquito-sw-lotes
     ports:
@@ -59,7 +59,7 @@ services:
       timeout: 10s
       retries: 3
 
-  sw-pagos-internos:
+  banquito-sw-pagos-internos:
     image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-sw-pagos-internos:latest
     container_name: banquito-sw-pagos-internos
     ports:
@@ -78,7 +78,7 @@ services:
       timeout: 10s
       retries: 3
 
-  sw-pagos-externos:
+  banquito-sw-pagos-externos:
     image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-sw-pagos-externos:latest
     container_name: banquito-sw-pagos-externos
     ports:
@@ -97,7 +97,7 @@ services:
       timeout: 10s
       retries: 3
 
-  sw-api-gateway:
+  banquito-sw-api-gateway:
     image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-sw-api-gateway:latest
     container_name: banquito-sw-api-gateway
     ports:
@@ -111,11 +111,11 @@ services:
       - banquito
     restart: unless-stopped
     depends_on:
-      - sw-enrutamiento
-      - sw-facturacion
-      - sw-lotes
-      - sw-pagos-internos
-      #- sw-pagos-externos
+      - banquito-sw-enrutamiento
+      - banquito-sw-facturacion
+      - banquito-sw-lotes
+      - banquito-sw-pagos-internos
+      #- banquito-sw-pagos-externos
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
       interval: 30s

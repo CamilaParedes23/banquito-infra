@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   # Switch Frontend Service
-  sw-frontend:
+  banquito-sw-frontend:
     image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-sw-frontend:latest
     container_name: banquito-sw-frontend
     ports:
