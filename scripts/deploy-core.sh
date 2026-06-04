@@ -53,26 +53,26 @@ case "$SERVICE" in
         echo -e "${GREEN} Todos los servicios desplegados${NC}"
         ;;
     banquito-core-ventanilla|core-ventanilla)
-        deploy_service "core-ventanilla"
+        deploy_service "banquito-core-ventanilla"
         ;;
     banquito-core-contable|core-contable)
-        deploy_service "core-contable"
+        deploy_service "banquito-core-contable"
         ;;
     banquito-core-admin|core-admin)
-        deploy_service "core-admin"
+        deploy_service "banquito-core-admin"
         ;;
     banquito-core-clientes|core-clientes)
-        deploy_service "core-clientes"
+        deploy_service "banquito-core-clientes"
         ;;
     banquito-core-transaccional|core-transaccional)
-        deploy_service "core-transaccional"
+        deploy_service "banquito-core-transaccional"
         ;;
     banquito-core-api-gateway|core-api-gateway)
-        deploy_service "core-api-gateway"
+        deploy_service "banquito-core-api-gateway"
         ;;
     *)
         echo -e "${RED} Servicio no reconocido: $SERVICE${NC}"
-        echo -e "${YELLOW}Servicios disponibles: all, ventanilla, contable, admin, clientes, transaccional, api-gateway${NC}"
+        echo -e "${YELLOW}Servicios disponibles: all, banquito-core-ventanilla, banquito-core-contable, banquito-core-admin, banquito-core-clientes, banquito-core-transaccional, banquito-core-api-gateway${NC}"
         exit 1
         ;;
 esac
