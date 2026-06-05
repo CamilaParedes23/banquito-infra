@@ -2,7 +2,7 @@
 
 set -e
 
-SERVICE="${1:-sw-frontend}"
+SERVICE="${1:-all}"
 
 # Colores para output
 RED='\033[0;31m'
@@ -46,7 +46,7 @@ deploy_service() {
 
 # Desplegar según servicio
 case "$SERVICE" in
-    banquito-sw-frontend)
+    all|banquito-sw-frontend|sw-frontend)
         echo -e "${YELLOW} Desplegando Switch Frontend...${NC}"
         docker compose pull
         docker compose up -d
@@ -54,7 +54,7 @@ case "$SERVICE" in
         ;;
     *)
         echo -e "${RED} Servicio no reconocido: $SERVICE${NC}"
-        echo -e "${YELLOW}Servicios disponibles: all, sw-frontend${NC}"
+        echo -e "${YELLOW}Servicios disponibles: all, sw-frontend, banquito-sw-frontend${NC}"
         exit 1
         ;;
 esac

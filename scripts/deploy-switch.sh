@@ -75,7 +75,7 @@ case "$SERVICE" in
         ;;
     *)
         echo -e "${RED} Servicio no reconocido: $SERVICE${NC}"
-        echo -e "${YELLOW}Servicios disponibles: all, banquito-sw-enrutamiento, banquito-sw-facturacion, banquito-sw-lotes, banquito-sw-pagos-internos, banquito-sw-pagos-externos, banquito-sw-api-gateway${NC}"
+        echo -e "${YELLOW}Servicios disponibles: all, banquito-sw-enrutamiento, banquito-sw-facturacion, banquito-sw-lotes, banquito-sw-pagos-internos, banquito-sw-pagos-externos, banquito-sw-reportes, banquito-sw-api-gateway${NC}"
         exit 1
         ;;
 esac
