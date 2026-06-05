@@ -67,6 +67,9 @@ case "$SERVICE" in
     banquito-sw-pagos-externos)
         deploy_service "banquito-sw-pagos-externos"
         ;;
+    banquito-sw-reportes)
+        deploy_service "banquito-sw-reportes"
+        ;;
     banquito-sw-api-gateway)
         deploy_service "banquito-sw-api-gateway"
         ;;
