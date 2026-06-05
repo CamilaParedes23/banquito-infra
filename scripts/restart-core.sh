@@ -10,14 +10,14 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-echo -e "${YELLOW}🔄 Reiniciando Banquito Core Backend...${NC}"
-echo -e "${YELLOW}📦 Servicio: $SERVICE${NC}"
+echo -e "${YELLOW} Reiniciando Banquito Core Backend...${NC}"
+echo -e "${YELLOW} Servicio: $SERVICE${NC}"
 
 cd "$(dirname "$0")/../docker/core"
 
 case "$SERVICE" in
     all)
-        echo -e "${YELLOW}📋 Reiniciando TODOS los servicios...${NC}"
+        echo -e "${YELLOW} Reiniciando TODOS los servicios...${NC}"
         docker compose restart
         ;;
     *)
@@ -26,6 +26,6 @@ case "$SERVICE" in
         ;;
 esac
 
-echo -e "${GREEN}✅ Reinicio completado${NC}"
-echo -e "\n${YELLOW}📋 Estado de contenedores:${NC}"
+echo -e "${GREEN} Reinicio completado${NC}"
+echo -e "\n${YELLOW} Estado de contenedores:${NC}"
 docker compose ps
