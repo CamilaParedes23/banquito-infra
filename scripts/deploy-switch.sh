@@ -52,30 +52,27 @@ case "$SERVICE" in
         docker compose up -d
         echo -e "${GREEN} Todos los servicios desplegados${NC}"
         ;;
-    banquito-sw-enrutamiento)
+    banquito-sw-enrutamiento|enrutamiento)
         deploy_service "banquito-sw-enrutamiento"
         ;;
-    banquito-sw-facturacion)
+    banquito-sw-facturacion|facturacion)
         deploy_service "banquito-sw-facturacion"
         ;;
-    banquito-sw-lotes)
+    banquito-sw-lotes|lotes)
         deploy_service "banquito-sw-lotes"
         ;;
-    banquito-sw-pagos-internos)
+    banquito-sw-pagos-internos|pagos-internos)
         deploy_service "banquito-sw-pagos-internos"
         ;;
-    banquito-sw-pagos-externos)
+    banquito-sw-pagos-externos|pagos-externos)
         deploy_service "banquito-sw-pagos-externos"
         ;;
-    banquito-sw-reportes)
+    banquito-sw-reportes|reportes)
         deploy_service "banquito-sw-reportes"
-        ;;
-    banquito-sw-api-gateway)
-        deploy_service "banquito-sw-api-gateway"
         ;;
     *)
         echo -e "${RED} Servicio no reconocido: $SERVICE${NC}"
-        echo -e "${YELLOW}Servicios disponibles: all, banquito-sw-enrutamiento, banquito-sw-facturacion, banquito-sw-lotes, banquito-sw-pagos-internos, banquito-sw-pagos-externos, banquito-sw-reportes, banquito-sw-api-gateway${NC}"
+        echo -e "${YELLOW}Servicios disponibles: all, enrutamiento, facturacion, lotes, pagos-internos, pagos-externos, reportes${NC}"
         exit 1
         ;;
 esac

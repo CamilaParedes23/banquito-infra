@@ -1,41 +1,20 @@
-version: '3.8'
-
 services:
-  # Core Backend Services
-  banquito-core-ventanilla:
-    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-ventanilla:latest
-    container_name: banquito-core-ventanilla
-    ports:
-      - "8081:8081"
-    environment:
-      - SPRING_PROFILES_ACTIVE=prod
-      - SERVER_PORT=8081
-    env_file:
-      - .env
-    networks:
-      - banquito
-    restart: unless-stopped
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8081/actuator/health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
   banquito-core-contable:
     image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-contable:latest
     container_name: banquito-core-contable
     ports:
-      - "8082:8082"
+      - "8007:8007"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
-      - SERVER_PORT=8082
+      - SERVER_PORT=8007
     env_file:
       - .env
+      - .env.contable
     networks:
       - banquito
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8082/actuator/health" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:8007/actuator/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -44,17 +23,18 @@ services:
     image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-admin:latest
     container_name: banquito-core-admin
     ports:
-      - "8083:8083"
+      - "8008:8008"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
-      - SERVER_PORT=8083
+      - SERVER_PORT=8008
     env_file:
       - .env
+      - .env.admin
     networks:
       - banquito
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8083/actuator/health" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:8008/actuator/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -63,17 +43,18 @@ services:
     image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-clientes:latest
     container_name: banquito-core-clientes
     ports:
-      - "8084:8084"
+      - "8009:8009"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
-      - SERVER_PORT=8084
+      - SERVER_PORT=8009
     env_file:
       - .env
+      - .env.clientes
     networks:
       - banquito
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8084/actuator/health" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:8009/actuator/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -82,42 +63,78 @@ services:
     image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-transaccional:latest
     container_name: banquito-core-transaccional
     ports:
-      - "8085:8085"
+      - "8010:8010"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
-      - SERVER_PORT=8085
+      - SERVER_PORT=8010
     env_file:
       - .env
+      - .env.transaccional
     networks:
       - banquito
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8085/actuator/health" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:8010/actuator/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
 
-  banquito-core-api-gateway:
-    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-api-gateway:latest
-    container_name: banquito-core-api-gateway
+  banquito-core-notificacion:
+    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-notificacion:latest
+    container_name: banquito-core-notificacion
     ports:
-      - "8090:8090"
+      - "8011:8011"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
-      - SERVER_PORT=8090
+      - SERVER_PORT=8011
     env_file:
       - .env
+      - .env.notificacion
     networks:
       - banquito
     restart: unless-stopped
-    depends_on:
-      - banquito-core-ventanilla
-      - banquito-core-contable
-      - banquito-core-admin
-      - banquito-core-clientes
-      - banquito-core-transaccional
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8090/actuator/health" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:8011/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  banquito-core-seguridad:
+    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-seguridad:latest
+    container_name: banquito-core-seguridad
+    ports:
+      - "8012:8012"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8012
+    env_file:
+      - .env
+      - .env.seguridad
+    networks:
+      - banquito
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8012/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  banquito-core-documentos:
+    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-documentos:latest
+    container_name: banquito-core-documentos
+    ports:
+      - "8013:8013"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8013
+    env_file:
+      - .env
+      - .env.documentos
+    networks:
+      - banquito
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8013/actuator/health" ]
       interval: 30s
       timeout: 10s
       retries: 3

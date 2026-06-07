@@ -8,6 +8,7 @@ target/
 
 # Variables / logs
 .env
+.env.*
 *.log
 
 # Carpetas locales no versionadas

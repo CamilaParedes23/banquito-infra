@@ -52,27 +52,30 @@ case "$SERVICE" in
         docker compose up -d
         echo -e "${GREEN} Todos los servicios desplegados${NC}"
         ;;
-    banquito-core-ventanilla)
-        deploy_service "banquito-core-ventanilla"
-        ;;
-    banquito-core-contable)
+    banquito-core-contable|contable)
         deploy_service "banquito-core-contable"
         ;;
-    banquito-core-admin)
+    banquito-core-admin|admin)
         deploy_service "banquito-core-admin"
         ;;
-    banquito-core-clientes)
+    banquito-core-clientes|clientes)
         deploy_service "banquito-core-clientes"
         ;;
-    banquito-core-transaccional)
+    banquito-core-transaccional|transaccional)
         deploy_service "banquito-core-transaccional"
         ;;
-    banquito-core-api-gateway)
-        deploy_service "banquito-core-api-gateway"
+    banquito-core-notificacion|notificacion)
+        deploy_service "banquito-core-notificacion"
+        ;;
+    banquito-core-seguridad|seguridad)
+        deploy_service "banquito-core-seguridad"
+        ;;
+    banquito-core-documentos|documentos)
+        deploy_service "banquito-core-documentos"
         ;;
     *)
         echo -e "${RED} Servicio no reconocido: $SERVICE${NC}"
-        echo -e "${YELLOW}Servicios disponibles: all, banquito-core-ventanilla, banquito-core-contable, banquito-core-admin, banquito-core-clientes, banquito-core-transaccional, banquito-core-api-gateway${NC}"
+        echo -e "${YELLOW}Servicios disponibles: all, contable, admin, clientes, transaccional, notificacion, seguridad, documentos${NC}"
         exit 1
         ;;
 esac

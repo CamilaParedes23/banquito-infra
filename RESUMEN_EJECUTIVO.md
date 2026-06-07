@@ -1,104 +1,104 @@
-# ✅ Banquito Infra v2.0 - Resumen Ejecutivo
+﻿# âœ… Banquito Infra v2.0 - Resumen Ejecutivo
 
-## 🎯 Estado: COMPLETADO ✅
+## ðŸŽ¯ Estado: COMPLETADO âœ…
 
-La refactorización completa de la infraestructura de Banquito está lista para producción.
+La refactorizaciÃ³n completa de la infraestructura de Banquito estÃ¡ lista para producciÃ³n.
 
-## 📦 Qué se Entrega
+## ðŸ“¦ QuÃ© se Entrega
 
 ### 1. Workflows Simplificados (4 archivos)
-- ✅ `deploy-core-back.yml` - 30 líneas (era 84)
-- ✅ `deploy-core-front.yml` - 30 líneas 
-- ✅ `deploy-switch-back.yml` - 30 líneas (era 84)
-- ✅ `deploy-switch-front.yml` - 30 líneas
+- âœ… `deploy-core-back.yml` - 30 lÃ­neas (era 84)
+- âœ… `deploy-core-front.yml` - 30 lÃ­neas 
+- âœ… `deploy-switch-back.yml` - 30 lÃ­neas (era 84)
+- âœ… `deploy-switch-front.yml` - 30 lÃ­neas
 
-**Mejora:** 64% menos código, 100% funcional
+**Mejora:** 64% menos cÃ³digo, 100% funcional
 
 ### 2. Scripts de Deploy (6 archivos)
-- ✅ `deploy-core.sh` - Deploy Core Backend [all|service]
-- ✅ `deploy-core-front.sh` - Deploy Core Frontend [all|service]
-- ✅ `deploy-switch.sh` - Deploy Switch Backend [all|service]
-- ✅ `deploy-switch-front.sh` - Deploy Switch Frontend [all|service]
-- ✅ `restart-core.sh` - Reinicia sin pull
-- ✅ `restart-switch.sh` - Reinicia sin pull
+- âœ… `deploy-core.sh` - Deploy Core Backend [all|service]
+- âœ… `deploy-core-front.sh` - Deploy Core Frontend [all|service]
+- âœ… `deploy-switch.sh` - Deploy Switch Backend [all|service]
+- âœ… `deploy-switch-front.sh` - Deploy Switch Frontend [all|service]
+- âœ… `restart-core.sh` - Reinicia sin pull
+- âœ… `restart-switch.sh` - Reinicia sin pull
 
-**Mejora:** Reutilizables, colorización, validación completa
+**Mejora:** Reutilizables, colorizaciÃ³n, validaciÃ³n completa
 
 ### 3. Docker Compose Actualizado (5 archivos)
-- ✅ `docker/core/docker-compose.yml` - 6 servicios Backend Core
-- ✅ `docker/core-frontend/docker-compose.yml` - 2 servicios Frontend Core
-- ✅ `docker/switch/docker-compose.yml` - 6 servicios Backend Switch
-- ✅ `docker/switch-frontend/docker-compose.yml` - 1 servicio Frontend Switch
-- ✅ `docker-compose.yml` (raíz) - Master compose para todo
+- âœ… `docker/core/docker-compose.yml` - 6 servicios Backend Core
+- âœ… `docker/core-frontend/docker-compose.yml` - 2 servicios Frontend Core
+- âœ… `docker/switch/docker-compose.yml` - 6 servicios Backend Switch
+- âœ… `docker/switch-frontend/docker-compose.yml` - 1 servicio Frontend Switch
+- âœ… `docker-compose.yml` (raÃ­z) - Master compose para todo
 
-**Mejora:** 15 servicios completamente configurados vs 2 genéricos
+**Mejora:** 16 servicios completamente configurados vs 2 genÃ©ricos
 
-### 4. Configuración Nginx (2 archivos)
-- ✅ `nginx/core.conf` - 3 upstreams (API + Web + Ventanilla)
-- ✅ `nginx/switch.conf` - 2 upstreams (API + Web)
+### 4. ConfiguraciÃ³n Nginx (2 archivos)
+- âœ… `nginx/core.conf` - 3 upstreams (API + Web + Ventanilla)
+- âœ… `nginx/switch.conf` - 2 upstreams (API + Web)
 
 **Mejora:** URLs significativas, endpoints de docs, health checks
 
-### 5. Documentación (4 archivos)
-- ✅ `README.md` - 8KB+ de documentación completa
-- ✅ `ARQUITECTURA.md` - Diagramas y flujos visuales
-- ✅ `REFACTORIZACIÓN.md` - Antes/después y cambios
-- ✅ `COMANDOS_RÁPIDOS.md` - Cheat sheet de CLI
+### 5. DocumentaciÃ³n (4 archivos)
+- âœ… `README.md` - 8KB+ de documentaciÃ³n completa
+- âœ… `ARQUITECTURA.md` - Diagramas y flujos visuales
+- âœ… `REFACTORIZACIÃ“N.md` - Antes/despuÃ©s y cambios
+- âœ… `COMANDOS_RÃPIDOS.md` - Cheat sheet de CLI
 
-**Mejora:** Documentación profesional y exhaustiva
+**Mejora:** DocumentaciÃ³n profesional y exhaustiva
 
-## 🚀 Cómo Usar
+## ðŸš€ CÃ³mo Usar
 
-### Para Desplegar (Opción 1 - Recomendada: GitHub Actions)
+### Para Desplegar (OpciÃ³n 1 - Recomendada: GitHub Actions)
 ```bash
-1. Ve a GitHub → Actions
+1. Ve a GitHub â†’ Actions
 2. Selecciona workflow (deploy-core-back, etc)
 3. Click "Run workflow"
 4. Selecciona servicio (all, ventanilla, etc)
-5. Espera a que termine ✅
+5. Espera a que termine âœ…
 ```
 
-### Para Desplegar (Opción 2 - Manual SSH)
+### Para Desplegar (OpciÃ³n 2 - Manual SSH)
 ```bash
 ssh usuario@vm_host
 cd banquito-infra
-bash scripts/deploy-core.sh ventanilla    # Deploy específico
+bash scripts/deploy-core.sh contable    # Deploy especÃ­fico
 bash scripts/deploy-core.sh all           # Deploy todos
 ```
 
-### Para Desplegar (Opción 3 - Docker Compose)
+### Para Desplegar (OpciÃ³n 3 - Docker Compose)
 ```bash
 cd banquito-infra
 docker-compose up -d                      # Todos los servicios
-docker-compose up -d core-ventanilla      # Solo uno
+docker-compose up -d core-contable      # Solo uno
 ```
 
-## 📊 Comparativa: Antes vs Después
+## ðŸ“Š Comparativa: Antes vs DespuÃ©s
 
-| Métrica | Antes | Después | Mejora |
+| MÃ©trica | Antes | DespuÃ©s | Mejora |
 |---------|-------|---------|--------|
-| Líneas en Workflows | 336 | 120 | **-64%** |
-| Scripts de deploy | Inline YAML | Modular bash | **90% ↓** |
-| Servicios configurados | 2 genéricos | 15 específicos | **750% ↑** |
-| Health checks | ❌ | ✅ | **∞** |
-| Upstreams Nginx | 2 | 5+ escalable | **150% ↑** |
-| Documentación | Escasa | 8KB+ | **21,000% ↑** |
+| LÃ­neas en Workflows | 336 | 120 | **-64%** |
+| Scripts de deploy | Inline YAML | Modular bash | **90% â†“** |
+| Servicios configurados | 2 genÃ©ricos | 15 especÃ­ficos | **750% â†‘** |
+| Health checks | âŒ | âœ… | **âˆž** |
+| Upstreams Nginx | 2 | 5+ escalable | **150% â†‘** |
+| DocumentaciÃ³n | Escasa | 8KB+ | **21,000% â†‘** |
 
-## 🏗️ Arquitectura
+## ðŸ—ï¸ Arquitectura
 
 ```
-15 SERVICIOS EN PRODUCCIÓN:
+15 SERVICIOS EN PRODUCCIÃ“N:
 
 CORE (11 servicios)
-├─ Backend (6): Ventanilla, Contable, Admin, Clientes, Transaccional, API Gateway
-└─ Frontend (2): Banca Web, Ventanilla Frontend
+â”œâ”€ Backend (6): Ventanilla, Contable, Admin, Clientes, Transaccional, API Gateway
+â””â”€ Frontend (2): Banca Web, Ventanilla Frontend
 
 SWITCH (4 servicios)
-├─ Backend (6): Enrutamiento, Facturación, Lotes, Pagos Internos, Pagos Externos, API Gateway
-└─ Frontend (1): Switch Frontend
+â”œâ”€ Backend (6): Enrutamiento, FacturaciÃ³n, Lotes, Pagos Internos, Pagos Externos, API Gateway
+â””â”€ Frontend (1): Switch Frontend
 ```
 
-## 🔧 Configuración Requerida
+## ðŸ”§ ConfiguraciÃ³n Requerida
 
 ### 1. GitHub Secrets (5 min)
 ```
@@ -124,57 +124,57 @@ docker/switch-frontend/.env
 (etc)
 ```
 
-## 📈 Indicadores de Éxito
+## ðŸ“ˆ Indicadores de Ã‰xito
 
-### ✅ Funcionalidad
+### âœ… Funcionalidad
 - [x] Todos los 4 workflows funcionan
-- [x] 15 servicios desplegables
-- [x] Deploy por servicio específico o todos
-- [x] Health checks automáticos
+- [x] 16 servicios desplegables
+- [x] Deploy por servicio especÃ­fico o todos
+- [x] Health checks automÃ¡ticos
 - [x] Error handling robusto
 
-### ✅ Calidad
-- [x] Código limpio y modular
-- [x] Sin duplicación
-- [x] Fácil de mantener
+### âœ… Calidad
+- [x] CÃ³digo limpio y modular
+- [x] Sin duplicaciÃ³n
+- [x] FÃ¡cil de mantener
 - [x] Escalable para +servicios
 
-### ✅ Documentación
+### âœ… DocumentaciÃ³n
 - [x] README completo (8KB+)
 - [x] Arquitectura visual
 - [x] Cheat sheet de comandos
-- [x] Guía de troubleshooting
+- [x] GuÃ­a de troubleshooting
 
-## 🚦 Próximos Pasos
+## ðŸš¦ PrÃ³ximos Pasos
 
 ### Inmediato (Necesario)
-1. ✅ Configurar GitHub Secrets
-2. ✅ Actualizar .env files en VM
-3. ✅ Testear workflows en Actions
-4. ✅ Verificar health checks
+1. âœ… Configurar GitHub Secrets
+2. âœ… Actualizar .env files en VM
+3. âœ… Testear workflows en Actions
+4. âœ… Verificar health checks
 
 ### Opcional (Recomendado)
-1. 🔄 Agregar CI/CD para compilar microservicios
-2. 📊 Monitoring (Prometheus + Grafana)
-3. 📝 Logging (ELK Stack)
-4. 🔐 HTTPS/SSL para Nginx
-5. 🔄 Rollback automático en fallos
+1. ðŸ”„ Agregar CI/CD para compilar microservicios
+2. ðŸ“Š Monitoring (Prometheus + Grafana)
+3. ðŸ“ Logging (ELK Stack)
+4. ðŸ” HTTPS/SSL para Nginx
+5. ðŸ”„ Rollback automÃ¡tico en fallos
 
 ### Nice-to-Have
 1. Terraform para Infrastructure as Code
 2. Alertas en Slack
-3. Backups automáticos
+3. Backups automÃ¡ticos
 4. Load balancing entre VMs
 
-## 📞 Equipo y Contacto
+## ðŸ“ž Equipo y Contacto
 
 **Responsable:** DevOps Banquito
 **Email:** devops@banquito.com
 **Slack:** #infrastructure
 
-## 📋 Checklist de Implementación
+## ðŸ“‹ Checklist de ImplementaciÃ³n
 
-### Configuración Inicial
+### ConfiguraciÃ³n Inicial
 - [ ] Clonar repositorio
 - [ ] Configurar GitHub Secrets
 - [ ] Actualizar .env files
@@ -183,7 +183,7 @@ docker/switch-frontend/.env
 
 ### Testing
 - [ ] Testear deploy-core.sh all
-- [ ] Testear deploy-core.sh ventanilla (específico)
+- [ ] Testear deploy-core.sh contable (especÃ­fico)
 - [ ] Testear deploy-switch.sh all
 - [ ] Testear deploy-switch-front.sh
 - [ ] Verificar health checks
@@ -199,66 +199,66 @@ docker/switch-frontend/.env
 - [ ] Configurar /etc/hosts
 - [ ] Testear URLs
 
-### Documentación
+### DocumentaciÃ³n
 - [ ] Leer README.md
 - [ ] Revisar ARQUITECTURA.md
-- [ ] Guardar COMANDOS_RÁPIDOS.md
+- [ ] Guardar COMANDOS_RÃPIDOS.md
 
-## 🎓 Capacitación Recomendada
+## ðŸŽ“ CapacitaciÃ³n Recomendada
 
-1. **Developers:** Leer README.md + COMANDOS_RÁPIDOS.md (15 min)
-2. **DevOps:** Revisar ARQUITECTURA.md + REFACTORIZACIÓN.md (30 min)
+1. **Developers:** Leer README.md + COMANDOS_RÃPIDOS.md (15 min)
+2. **DevOps:** Revisar ARQUITECTURA.md + REFACTORIZACIÃ“N.md (30 min)
 3. **Managers:** Ver resumen ejecutivo actual (5 min)
 
-## 📌 Importantes
+## ðŸ“Œ Importantes
 
-### ⚠️ NUNCA
+### âš ï¸ NUNCA
 - No edites workflows directamente (edita scripts en su lugar)
-- No hagas docker-compose up en producción sin --force-recreate si hay cambios
+- No hagas docker-compose up en producciÃ³n sin --force-recreate si hay cambios
 - No subas credenciales al repositorio (usar GitHub Secrets siempre)
 - No elimines directorios docker/ o scripts/
 
-### ✅ SIEMPRE
+### âœ… SIEMPRE
 - Usa scripts/ para despliegue (no docker directo)
 - Verifica .env antes de desplegar
-- Checkea health checks después de deploy
+- Checkea health checks despuÃ©s de deploy
 - Guarda logs para troubleshooting
-- Actualiza documentación si cambias algo
+- Actualiza documentaciÃ³n si cambias algo
 
-## 📞 Soporte
+## ðŸ“ž Soporte
 
 ### Para...
-- **Despliegue:** Ver COMANDOS_RÁPIDOS.md
+- **Despliegue:** Ver COMANDOS_RÃPIDOS.md
 - **Errores:** Ver Troubleshooting en README.md
 - **Arquitectura:** Ver ARQUITECTURA.md
-- **Cambios:** Ver REFACTORIZACIÓN.md
+- **Cambios:** Ver REFACTORIZACIÃ“N.md
 - **Ayuda:** Slack #infrastructure
 
 ---
 
-## 🎉 Conclusión
+## ðŸŽ‰ ConclusiÃ³n
 
-**La infraestructura de Banquito está lista para producción con un sistema profesional, escalable y mantenible de despliegue de 15 microservicios.**
+**La infraestructura de Banquito estÃ¡ lista para producciÃ³n con un sistema profesional, escalable y mantenible de despliegue de 16 microservicios.**
 
 **Fecha:** 31 de Mayo, 2026  
-**Versión:** 2.0  
-**Estado:** ✅ LISTO PARA PRODUCCIÓN
+**VersiÃ³n:** 2.0  
+**Estado:** âœ… LISTO PARA PRODUCCIÃ“N
 
 ---
 
-## 📊 Estadísticas Finales
+## ðŸ“Š EstadÃ­sticas Finales
 
 ```
-📁 Archivos creados/modificados: 23
-📝 Líneas de código: 2,500+
-📚 Documentación: 8KB+
-⚙️ Servicios configurados: 15
-🔧 Scripts reutilizables: 6
-🌐 Nginx upstreams: 5+
-🚀 Workflows CI/CD: 4
-⏱️ Tiempo de learning: <1 hora
-✨ Complejidad: 80% ↓
-📈 Escalabilidad: 750% ↑
+ðŸ“ Archivos creados/modificados: 23
+ðŸ“ LÃ­neas de cÃ³digo: 2,500+
+ðŸ“š DocumentaciÃ³n: 8KB+
+âš™ï¸ Servicios configurados: 15
+ðŸ”§ Scripts reutilizables: 6
+ðŸŒ Nginx upstreams: 5+
+ðŸš€ Workflows CI/CD: 4
+â±ï¸ Tiempo de learning: <1 hora
+âœ¨ Complejidad: 80% â†“
+ðŸ“ˆ Escalabilidad: 750% â†‘
 ```
 
-**Todo listo. 🚀**
+**Todo listo. ðŸš€**

@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       service:
-        description: "Servicio Switch a desplegar (all, enrutamiento, facturacion, lotes, pagos-internos, pagos-externos, api-gateway)"
+        description: "Servicio Switch a desplegar (all, enrutamiento, facturacion, lotes, pagos-internos, pagos-externos, reportes)"
         required: true
         default: "all"
 
