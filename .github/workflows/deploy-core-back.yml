@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       service:
-        description: "Servicio Core a desplegar (all, contable, admin, clientes, transaccional, notificacion, seguridad, documentos)"
+        description: "Servicio Core a desplegar (all, core-accounting-service, core-admin-service, core-customer-service, core-account-service, notification-service, identity-access-service, document-service, mailpit)"
         required: true
         default: "all"
 

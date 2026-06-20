@@ -52,30 +52,33 @@ case "$SERVICE" in
         docker compose up -d
         echo -e "${GREEN} Todos los servicios desplegados${NC}"
         ;;
-    banquito-core-contable|contable)
-        deploy_service "banquito-core-contable"
+    core-accounting-service|banquito-core-contable|contable)
+        deploy_service "core-accounting-service"
         ;;
-    banquito-core-admin|admin)
-        deploy_service "banquito-core-admin"
+    core-admin-service|banquito-core-admin|admin)
+        deploy_service "core-admin-service"
         ;;
-    banquito-core-clientes|clientes)
-        deploy_service "banquito-core-clientes"
+    core-customer-service|banquito-core-clientes|clientes)
+        deploy_service "core-customer-service"
         ;;
-    banquito-core-transaccional|transaccional)
-        deploy_service "banquito-core-transaccional"
+    core-account-service|banquito-core-transaccional|transaccional)
+        deploy_service "core-account-service"
         ;;
-    banquito-core-notificacion|notificacion)
-        deploy_service "banquito-core-notificacion"
+    notification-service|banquito-core-notificacion|notificacion)
+        deploy_service "notification-service"
         ;;
-    banquito-core-seguridad|seguridad)
-        deploy_service "banquito-core-seguridad"
+    identity-access-service|banquito-core-seguridad|seguridad)
+        deploy_service "identity-access-service"
         ;;
-    banquito-core-documentos|documentos)
-        deploy_service "banquito-core-documentos"
+    document-service|banquito-core-documentos|documentos)
+        deploy_service "document-service"
+        ;;
+    mailpit)
+        deploy_service "mailpit"
         ;;
     *)
         echo -e "${RED} Servicio no reconocido: $SERVICE${NC}"
-        echo -e "${YELLOW}Servicios disponibles: all, contable, admin, clientes, transaccional, notificacion, seguridad, documentos${NC}"
+        echo -e "${YELLOW}Servicios disponibles: all, core-accounting-service (contable), core-admin-service (admin), core-customer-service (clientes), core-account-service (transaccional), notification-service (notificacion), identity-access-service (seguridad), document-service (documentos), mailpit${NC}"
         exit 1
         ;;
 esac
