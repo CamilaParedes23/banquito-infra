@@ -1,4 +1,4 @@
-﻿# ðŸ¤– GuÃ­a de CD AutomÃ¡tico (Deploy on Push)
+# ðŸ¤– GuÃ­a de CD AutomÃ¡tico (Deploy on Push)
 
 Como la infraestructura ya estÃ¡ preparada para recibir "webhooks" (a travÃ©s de `repository_dispatch`), **no necesitas modificar los archivos en `banquito-infra`**. 
 
@@ -46,23 +46,23 @@ SegÃºn el microservicio que estÃ©s configurando, cambia el `event-type` y el
 | Repositorio / Servicio | `event-type` (El Workflow a llamar) | `client-payload` (El Servicio a reiniciar) |
 |------------------------|-------------------------------------|-------------------------------------------|
 | **Core Backend** | | |
-| core-contable | `deploy-core-back` | `{"service": "contable"}` |
-| core-admin | `deploy-core-back` | `{"service": "admin"}` |
-| core-clientes | `deploy-core-back` | `{"service": "clientes"}` |
-| core-transaccional | `deploy-core-back` | `{"service": "transaccional"}` |
-| core-notificacion | `deploy-core-back` | `{"service": "notificacion"}` |
-| core-seguridad | `deploy-core-back` | `{"service": "seguridad"}` |
-| core-documentos | `deploy-core-back` | `{"service": "documentos"}` |
+| core-contable | `deploy-core-back` | `{"service": "contable"}` o `{"service": "core-accounting-service"}` |
+| core-admin | `deploy-core-back` | `{"service": "admin"}` o `{"service": "core-admin-service"}` |
+| core-clientes | `deploy-core-back` | `{"service": "clientes"}` o `{"service": "core-customer-service"}` |
+| core-transaccional | `deploy-core-back` | `{"service": "transaccional"}` o `{"service": "core-account-service"}` |
+| core-notificacion | `deploy-core-back` | `{"service": "notificacion"}` o `{"service": "notification-service"}` |
+| core-seguridad | `deploy-core-back` | `{"service": "seguridad"}` o `{"service": "identity-access-service"}` |
+| core-documentos | `deploy-core-back` | `{"service": "documentos"}` o `{"service": "document-service"}` |
 | **Core Frontend** | | |
 | core-banca-web | `deploy-core-front` | `{"service": "banca-web"}` |
 | core-contable-frontend| `deploy-core-front` | `{"service": "ventanilla-frontend"}`|
 | **Switch Backend** | | |
-| sw-enrutamiento | `deploy-switch-back` | `{"service": "enrutamiento"}` |
-| sw-facturacion | `deploy-switch-back` | `{"service": "facturacion"}` |
-| sw-lotes | `deploy-switch-back` | `{"service": "lotes"}` |
-| sw-pagos-internos | `deploy-switch-back` | `{"service": "pagos-internos"}` |
-| sw-pagos-externos | `deploy-switch-back` | `{"service": "pagos-externos"}` |
-| sw-reportes | `deploy-switch-back` | `{"service": "reportes"}` |
+| sw-enrutamiento | `deploy-switch-back` | `{"service": "enrutamiento"}` o `{"service": "routing-service"}` |
+| sw-facturacion | `deploy-switch-back` | `{"service": "facturacion"}` o `{"service": "billing-service"}` |
+| sw-lotes | `deploy-switch-back` | `{"service": "lotes"}` o `{"service": "batch-service"}` |
+| sw-pagos-internos | `deploy-switch-back` | `{"service": "pagos-internos"}` o `{"service": "on-us-settlement-service"}` |
+| sw-reportes | `deploy-switch-back` | `{"service": "reportes"}` o `{"service": "reporting-service"}` |
+| sw-sft | `deploy-switch-back` | `{"service": "sft"}` o `{"service": "sftp-service"}` |
 | **Switch Frontend** | | |
 | sw-frontend | `deploy-switch-front`| `{"service": "sw-frontend"}` |
 

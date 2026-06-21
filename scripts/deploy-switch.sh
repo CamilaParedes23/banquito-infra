@@ -70,7 +70,7 @@ case "$SERVICE" in
     rabbitmq)
         deploy_service "rabbitmq"
         ;;
-    sftp-service|sftp)
+    sftp-service|sftp|banquito-sw-sft|sft)
         deploy_service "sftp-service"
         ;;
     *)
