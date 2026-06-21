@@ -1,5 +1,3 @@
-version: '3.8'
-
 # Master docker-compose para orquestar todos los servicios de Banquito
 # Nota: Este archivo es opcional, puedes usar los compose individuales por subsistema
 
@@ -154,7 +152,7 @@ services:
   # ============================================
 
   core-banca-web:
-    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-bancaweb-fronend:latest
+    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-bancaweb-fronend:fix-api-20260621
     container_name: banquito-core-banca-web
     ports:
       - "3000:3000"
