@@ -36,7 +36,7 @@ services:
       rabbitmq:
         condition: service_healthy
     ports:
-      - "${SWITCH_BATCH_BIND_IP:-0.0.0.0}:${BATCH_HOST_PORT:-8081}:8081"
+      - "${SWITCH_BATCH_BIND_IP:-0.0.0.0}:${BATCH_HOST_PORT:-8016}:8081"
     expose:
       - "8081"
     environment:
@@ -208,7 +208,7 @@ services:
       rabbitmq:
         condition: service_healthy
     ports:
-      - "${SWITCH_REPORTING_BIND_IP:-0.0.0.0}:${REPORTING_HOST_PORT:-8085}:8085"
+      - "${SWITCH_REPORTING_BIND_IP:-0.0.0.0}:${REPORTING_HOST_PORT:-8019}:8085"
     expose:
       - "8085"
     environment:
