@@ -8,30 +8,30 @@ services:
       TZ: ${TZ}
       MP_MAX_MESSAGES: ${MAILPIT_MAX_MESSAGES:-5000}
     ports:
-    - 127.0.0.1:8025:8025
-    - 127.0.0.1:1026:1025
+      - '8025:8025'
+      - '1026:1025'
     networks:
-    - banquito-net
+      - banquito-net
     healthcheck:
       test:
-      - CMD
-      - wget
-      - --spider
-      - -q
-      - http://127.0.0.1:8025/api/v1/info
+        - CMD
+        - wget
+        - --spider
+        - -q
+        - http://mailpit:8025/api/v1/info
       interval: 15s
       timeout: 5s
       retries: 10
       start_period: 20s
     env_file:
-    - ./.env
+      - ./.env
   identity-access-service:
     image: andrescarrillo2001/banquito-core-seguridad:latest
     container_name: banquito-identity-access-service
     restart: unless-stopped
     environment:
       TZ: ${TZ}
-      SPRING_PROFILES_ACTIVE: docker
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-docker}
       SPRING_APPLICATION_NAME: identity-access-service
       SERVER_PORT: 8081
       APP_TIMEZONE: ${TZ}
@@ -48,27 +48,27 @@ services:
       NOTIFICATION_SERVICE_BASE_URL: http://notification-service:8087
       INTERNAL_SERVICE_KEY: ${INTERNAL_SERVICE_KEY}
       IDENTITY_OUTBOX_ENABLED: ${IDENTITY_OUTBOX_ENABLED:-true}
-      JPA_DDL_AUTO: validate
+      JPA_DDL_AUTO: ${JPA_DDL_AUTO:-validate}
       FLYWAY_ENABLED: ${FLYWAY_ENABLED:-true}
       FLYWAY_BASELINE_ON_MIGRATE: ${FLYWAY_BASELINE_ON_MIGRATE:-true}
       FLYWAY_BASELINE_VERSION: ${FLYWAY_BASELINE_VERSION:-1}
-      ACTUATOR_ENDPOINTS: health,info
-      ACTUATOR_HEALTH_DETAILS: always
-      OPENAPI_DOCS_PATH: /api-docs
-      SWAGGER_UI_PATH: /swagger-ui.html
+      ACTUATOR_ENDPOINTS: ${ACTUATOR_ENDPOINTS:-health,info}
+      ACTUATOR_HEALTH_DETAILS: ${ACTUATOR_HEALTH_DETAILS:-always}
+      OPENAPI_DOCS_PATH: ${OPENAPI_DOCS_PATH:-/api-docs}
+      SWAGGER_UI_PATH: ${SWAGGER_UI_PATH:-/swagger-ui.html}
     ports:
-    - '8081:8081'
+      - '8081:8081'
     networks:
-    - banquito-net
+      - banquito-net
     env_file:
-    - ./.env
+      - ./.env
   core-customer-service:
     image: andrescarrillo2001/banquito-core-clientes:latest
     container_name: banquito-core-customer-service
     restart: unless-stopped
     environment:
       TZ: ${TZ}
-      SPRING_PROFILES_ACTIVE: docker
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-docker}
       SPRING_APPLICATION_NAME: core-customer-service
       SERVER_PORT: 8082
       APP_TIME_ZONE: ${TZ}
@@ -77,31 +77,31 @@ services:
       CUSTOMER_DB_PASSWORD: ${MYSQL_PASSWORD}
       JWT_ISSUER: ${JWT_ISSUER}
       JWT_SECRET: ${JWT_SECRET}
-      JPA_DDL_AUTO: validate
-      HIBERNATE_FORMAT_SQL: false
+      JPA_DDL_AUTO: ${JPA_DDL_AUTO:-validate}
+      HIBERNATE_FORMAT_SQL: ${HIBERNATE_FORMAT_SQL:-false}
       FLYWAY_ENABLED: ${FLYWAY_ENABLED:-true}
       FLYWAY_BASELINE_ON_MIGRATE: ${FLYWAY_BASELINE_ON_MIGRATE:-true}
       FLYWAY_BASELINE_VERSION: ${FLYWAY_BASELINE_VERSION:-1}
       DEMO_DATA_ENABLED: ${CUSTOMER_DEMO_DATA_ENABLED:-false}
       GRPC_SERVER_PORT: 9092
-      ACTUATOR_EXPOSURE: health,info
-      ACTUATOR_HEALTH_SHOW_DETAILS: always
-      OPENAPI_DOCS_PATH: /api-docs
-      SWAGGER_UI_PATH: /swagger-ui.html
+      ACTUATOR_EXPOSURE: ${ACTUATOR_EXPOSURE:-health,info}
+      ACTUATOR_HEALTH_SHOW_DETAILS: ${ACTUATOR_HEALTH_SHOW_DETAILS:-always}
+      OPENAPI_DOCS_PATH: ${OPENAPI_DOCS_PATH:-/api-docs}
+      SWAGGER_UI_PATH: ${SWAGGER_UI_PATH:-/swagger-ui.html}
     ports:
-    - '8082:8082'
-    - '9092:9092'
+      - '8082:8082'
+      - '9092:9092'
     networks:
-    - banquito-net
+      - banquito-net
     env_file:
-    - ./.env
+      - ./.env
   core-admin-service:
     image: andrescarrillo2001/banquito-core-admin:latest
     container_name: banquito-core-admin-service
     restart: unless-stopped
     environment:
       TZ: ${TZ}
-      SPRING_PROFILES_ACTIVE: docker
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-docker}
       SPRING_APPLICATION_NAME: core-admin-service
       SERVER_PORT: 8083
       APP_TIME_ZONE: ${TZ}
@@ -114,24 +114,24 @@ services:
       FLYWAY_ENABLED: ${FLYWAY_ENABLED:-true}
       FLYWAY_BASELINE_ON_MIGRATE: ${FLYWAY_BASELINE_ON_MIGRATE:-true}
       FLYWAY_BASELINE_VERSION: ${FLYWAY_BASELINE_VERSION:-1}
-      HIBERNATE_DDL_AUTO: validate
-      HIBERNATE_FORMAT_SQL: false
-      MANAGEMENT_HEALTH_DETAILS: always
+      HIBERNATE_DDL_AUTO: ${HIBERNATE_DDL_AUTO:-validate}
+      HIBERNATE_FORMAT_SQL: ${HIBERNATE_FORMAT_SQL:-false}
+      MANAGEMENT_HEALTH_DETAILS: ${MANAGEMENT_HEALTH_DETAILS:-always}
       GRPC_SERVER_PORT: 9093
     ports:
-    - '8083:8083'
-    - '9093:9093'
+      - '8083:8083'
+      - '9093:9093'
     networks:
-    - banquito-net
+      - banquito-net
     env_file:
-    - ./.env
+      - ./.env
   core-accounting-service:
     image: andrescarrillo2001/banquito-core-contable
     container_name: banquito-core-accounting-service
     restart: unless-stopped
     environment:
       TZ: ${TZ}
-      SPRING_PROFILES_ACTIVE: docker
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-docker}
       SPRING_APPLICATION_NAME: core-accounting-service
       SERVER_PORT: 8084
       APP_TIMEZONE: ${TZ}
@@ -140,14 +140,14 @@ services:
       ACCOUNTING_DB_PASSWORD: ${MYSQL_PASSWORD}
       JWT_ISSUER: ${JWT_ISSUER}
       JWT_SECRET: ${JWT_SECRET}
-      JPA_DDL_AUTO: validate
+      JPA_DDL_AUTO: ${JPA_DDL_AUTO:-validate}
       FLYWAY_ENABLED: ${FLYWAY_ENABLED:-true}
       FLYWAY_BASELINE_ON_MIGRATE: ${FLYWAY_BASELINE_ON_MIGRATE:-true}
       FLYWAY_BASELINE_VERSION: ${FLYWAY_BASELINE_VERSION:-1}
-      ACTUATOR_ENDPOINTS: health,info
-      ACTUATOR_HEALTH_DETAILS: always
-      OPENAPI_DOCS_PATH: /api-docs
-      SWAGGER_UI_PATH: /swagger-ui.html
+      ACTUATOR_ENDPOINTS: ${ACTUATOR_ENDPOINTS:-health,info}
+      ACTUATOR_HEALTH_DETAILS: ${ACTUATOR_HEALTH_DETAILS:-always}
+      OPENAPI_DOCS_PATH: ${OPENAPI_DOCS_PATH:-/api-docs}
+      SWAGGER_UI_PATH: ${SWAGGER_UI_PATH:-/swagger-ui.html}
       ACCOUNTING_DEFAULT_CUTOFF_TIME: ${ACCOUNTING_DEFAULT_CUTOFF_TIME:-20:00:00}
       ACCOUNTING_REPORT_DIRECTORY: /reports/eod
       DOCUMENT_SERVICE_URL: http://document-service:8086
@@ -155,24 +155,24 @@ services:
       DB_MAX_POOL_SIZE: ${DB_MAX_POOL_SIZE:-10}
       DB_MIN_IDLE: ${DB_MIN_IDLE:-2}
       DB_CONNECTION_TIMEOUT_MS: ${DB_CONNECTION_TIMEOUT_MS:-30000}
-      HIBERNATE_FORMAT_SQL: false
+      HIBERNATE_FORMAT_SQL: ${HIBERNATE_FORMAT_SQL:-false}
       GRPC_SERVER_PORT: 9094
     volumes:
-    - accounting_reports_data:/reports/eod
+      - accounting_reports_data:/reports/eod
     ports:
-    - '8084:8084'
-    - '9094:9094'
+      - '8084:8084'
+      - '9094:9094'
     networks:
-    - banquito-net
+      - banquito-net
     env_file:
-    - ./.env
+      - ./.env
   core-account-service:
     image: andrescarrillo2001/banquito-core-transaccional:latest
     container_name: banquito-core-account-service
     restart: unless-stopped
     environment:
       TZ: ${TZ}
-      SPRING_PROFILES_ACTIVE: docker
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-docker}
       SPRING_APPLICATION_NAME: core-account-service
       SERVER_PORT: 8085
       APP_TIMEZONE: ${TZ}
@@ -181,18 +181,18 @@ services:
       ACCOUNT_DB_PASSWORD: ${MYSQL_PASSWORD}
       JWT_ISSUER: ${JWT_ISSUER}
       JWT_SECRET: ${JWT_SECRET}
-      JPA_DDL_AUTO: validate
+      JPA_DDL_AUTO: ${JPA_DDL_AUTO:-validate}
       FLYWAY_ENABLED: ${FLYWAY_ENABLED:-true}
       FLYWAY_BASELINE_ON_MIGRATE: ${FLYWAY_BASELINE_ON_MIGRATE:-true}
       FLYWAY_BASELINE_VERSION: ${FLYWAY_BASELINE_VERSION:-1}
-      ACTUATOR_ENDPOINTS: health,info
-      ACTUATOR_HEALTH_DETAILS: always
-      OPENAPI_DOCS_PATH: /api-docs
-      SWAGGER_UI_PATH: /swagger-ui.html
+      ACTUATOR_ENDPOINTS: ${ACTUATOR_ENDPOINTS:-health,info}
+      ACTUATOR_HEALTH_DETAILS: ${ACTUATOR_HEALTH_DETAILS:-always}
+      OPENAPI_DOCS_PATH: ${OPENAPI_DOCS_PATH:-/api-docs}
+      SWAGGER_UI_PATH: ${SWAGGER_UI_PATH:-/swagger-ui.html}
       DB_MAX_POOL_SIZE: ${DB_MAX_POOL_SIZE:-10}
       DB_MIN_IDLE: ${DB_MIN_IDLE:-2}
       DB_CONNECTION_TIMEOUT_MS: ${DB_CONNECTION_TIMEOUT_MS:-30000}
-      HIBERNATE_FORMAT_SQL: false
+      HIBERNATE_FORMAT_SQL: ${HIBERNATE_FORMAT_SQL:-false}
       CUSTOMER_GRPC_HOST: core-customer-service
       CUSTOMER_GRPC_PORT: 9092
       ADMIN_GRPC_HOST: core-admin-service
@@ -214,7 +214,7 @@ services:
       RECENT_TRANSACTIONS_LIMIT: ${RECENT_TRANSACTIONS_LIMIT:-20}
       ACCOUNTING_DATE_SOURCE: ${ACCOUNTING_DATE_SOURCE:-local}
     ports:
-    - '8085:8085'
+      - '8085:8085'
     depends_on:
       core-customer-service:
         condition: service_started
@@ -227,24 +227,24 @@ services:
       notification-service:
         condition: service_started
     networks:
-    - banquito-net
+      - banquito-net
     env_file:
-    - ./.env
+      - ./.env
   document-service:
     image: andrescarrillo2001/banquito-core-documentos:latest
     container_name: banquito-document-service
     restart: unless-stopped
     environment:
       TZ: ${TZ}
-      SPRING_PROFILES_ACTIVE: docker
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-docker}
       SPRING_APPLICATION_NAME: document-service
       SERVER_PORT: 8086
       MONGODB_URI: ${MONGODB_URI}
       JWT_ISSUER: ${JWT_ISSUER}
       JWT_SECRET: ${JWT_SECRET}
       DOCUMENT_DEMO_ENABLED: ${DOCUMENT_DEMO_ENABLED:-true}
-      ACTUATOR_EXPOSURE: health,info
-      ACTUATOR_HEALTH_DETAILS: always
+      ACTUATOR_EXPOSURE: ${ACTUATOR_EXPOSURE:-health,info}
+      ACTUATOR_HEALTH_DETAILS: ${ACTUATOR_HEALTH_DETAILS:-always}
       LOG_LEVEL_ROOT: INFO
       LOG_LEVEL_APP: INFO
       DOCUMENT_GRPC_PORT: 9096
@@ -252,19 +252,19 @@ services:
       DOCUMENT_STORAGE_BASE_PATH: /documents
       INTERNAL_SERVICE_KEY: ${INTERNAL_SERVICE_KEY}
     ports:
-    - '8086:8086'
-    - '9096:9096'
+      - '8086:8086'
+      - '9096:9096'
     networks:
-    - banquito-net
+      - banquito-net
     env_file:
-    - ./.env
+      - ./.env
   notification-service:
     image: andrescarrillo2001/banquito-core-notificacion:latest
     container_name: banquito-notification-service
     restart: unless-stopped
     environment:
       TZ: ${TZ}
-      SPRING_PROFILES_ACTIVE: docker
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-docker}
       SERVER_PORT: 8087
       NOTIFICATION_DB_URL: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${NOTIFICATION_DB_NAME}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=America/Guayaquil&useUnicode=true&characterEncoding=utf8&connectionCollation=utf8mb4_unicode_ci
       NOTIFICATION_DB_USERNAME: ${MYSQL_USER}
@@ -284,15 +284,15 @@ services:
       INTERNAL_SERVICE_KEY: ${INTERNAL_SERVICE_KEY}
       NOTIFICATION_GRPC_PORT: 9097
     ports:
-    - '8087:8087'
-    - '9097:9097'
+      - '8087:8087'
+      - '9097:9097'
     depends_on:
       mailpit:
         condition: service_started
     networks:
-    - banquito-net
+      - banquito-net
     env_file:
-    - ./.env
+      - ./.env
 networks:
   banquito-net:
     external: true
