@@ -154,20 +154,17 @@ services:
   # ============================================
 
   core-banca-web:
-    image: ${DOCKER_USERNAME:-banquito}/banquito-core-banca-web:latest
+    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-bancaweb-fronend:latest
     container_name: banquito-core-banca-web
     ports:
       - "3000:3000"
-    environment:
-      - NODE_ENV=production
-      - REACT_APP_API_URL=http://localhost:8090
     env_file:
       - docker/core-frontend/.env
     networks:
       - banquito
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:3000" ]
+      test: [ "CMD", "wget", "-qO-", "http://localhost:3000" ]
       interval: 30s
       timeout: 10s
       retries: 3
