@@ -1,124 +1,310 @@
 services:
-  banquito-sw-enrutamiento:
-    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-sw-enrutamiento:latest
-    container_name: banquito-sw-enrutamiento
-    ports:
-      - "8014:8014"
-    environment:
-      - SPRING_PROFILES_ACTIVE=prod
-      - SERVER_PORT=8014
-    env_file:
-      - .env
-      - .env.enrutamiento
-    networks:
-      - banquito
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: banquito-switch-rabbitmq
     restart: unless-stopped
+    entrypoint:
+      - sh
+      - -c
+      - |
+        chown -R rabbitmq:rabbitmq /var/lib/rabbitmq
+        if [ -f /var/lib/rabbitmq/.erlang.cookie ]; then chmod 600 /var/lib/rabbitmq/.erlang.cookie; fi
+        exec docker-entrypoint.sh rabbitmq-server
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-guest}
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8014/actuator/health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+      interval: 15s
+      timeout: 20s
+      retries: 10
+      start_period: 180s
+    volumes:
+      - switch_rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - banquito-switch-network
+    logging:
+      options:
+        max-size: ${DOCKER_LOG_MAX_SIZE:-10m}
+        max-file: ${DOCKER_LOG_MAX_FILE:-5}
 
-  banquito-sw-facturacion:
-    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-sw-facturacion:latest
-    container_name: banquito-sw-facturacion
-    ports:
-      - "8015:8015"
-    environment:
-      - SPRING_PROFILES_ACTIVE=prod
-      - SERVER_PORT=8015
-    env_file:
-      - .env
-      - .env.facturacion
-    networks:
-      - banquito
+  batch-service:
+    image: andrescarrillo2001/banquito-sw-lotes:latest
+    container_name: banquito-switch-batch-service
     restart: unless-stopped
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8015/actuator/health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "${SWITCH_BATCH_BIND_IP:-0.0.0.0}:${BATCH_HOST_PORT:-8081}:8081"
+    expose:
+      - "8081"
+    environment:
+      SERVER_PORT: 8081
+      DB_URL: jdbc:postgresql://${DB_HOST}:${DB_PORT:-5432}/SWITCH_LOTES_DB${DB_JDBC_OPTIONS:-?sslmode=require}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      SPRING_SQL_INIT_MODE: ${SPRING_SQL_INIT_MODE:-never}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO:-validate}
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: ${SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE:-3}
+      SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE: ${SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE:-1}
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-guest}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
+      RABBIT_EXCHANGE_BATCH: switch.batch.exchange
+      RABBIT_EXCHANGE_BILLING: switch.billing.exchange
+      RABBIT_QUEUE_ROUTING_PAYMENT_LINES: switch.routing.payment-lines.queue
+      RABBIT_QUEUE_BATCH_BILLING_COMPLETED: switch.batch.billing-completed.queue
+      RABBIT_ROUTING_KEY_PAYMENT_LINE_REQUESTED: payment.line.requested
+      RABBIT_ROUTING_KEY_BILLING_COMPLETED: billing.completed
+      CORE_KONG_BASE_URL: ${CORE_KONG_BASE_URL:-http://banquito-kong-gateway:8000}
+      CORE_KONG_AUTH_TOKEN: ${CORE_KONG_AUTH_TOKEN:-}
+      CORE_KONG_CLIENT_TOKEN_ENABLED: ${CORE_KONG_CLIENT_TOKEN_ENABLED:-true}
+      CORE_KONG_CLIENT_ID: ${CORE_KONG_CLIENT_ID:-switch-pagos-internos-service}
+      CORE_KONG_CLIENT_SECRET: ${CORE_KONG_CLIENT_SECRET}
+      CORE_KONG_REQUIRED_SCOPE: ${CORE_KONG_REQUIRED_SCOPE:-core.reserve.consume}
+      CORE_KONG_CUSTOMER_REQUIRED_SCOPE: ${CORE_KONG_CUSTOMER_REQUIRED_SCOPE:-customer.read}
+      CORE_KONG_ACCOUNT_REQUIRED_SCOPE: ${CORE_KONG_ACCOUNT_REQUIRED_SCOPE:-account.read}
+      CORE_KONG_RESERVATION_CREATE_REQUIRED_SCOPE: ${CORE_KONG_RESERVATION_CREATE_REQUIRED_SCOPE:-core.reserve.create}
+      CORE_KONG_CLIENT_TOKEN_PATH: ${CORE_KONG_CLIENT_TOKEN_PATH:-/api/v1/auth/client-token}
+      CORE_KONG_CLIENT_TOKEN_REFRESH_SKEW_SECONDS: ${CORE_KONG_CLIENT_TOKEN_REFRESH_SKEW_SECONDS:-60}
+      CORE_KONG_CUSTOMERS_BY_IDENTIFICATION_PATH: ${CORE_KONG_CUSTOMERS_BY_IDENTIFICATION_PATH:-/api/v1/customers/by-identification/{identification}}
+      CORE_KONG_ACCOUNT_BY_NUMBER_PATH: ${CORE_KONG_ACCOUNT_BY_NUMBER_PATH:-/api/v1/accounts/{accountNumber}}
+      CORE_SWITCH_DEFAULT_ACCOUNTING_DATE: ${CORE_SWITCH_DEFAULT_ACCOUNTING_DATE:-}
+      GRPC_SERVER_PORT: 9091
+      SWITCH_FILES_OUTPUT_DIRECTORY: /app/output
+    volumes:
+      - switch_generated_files:/app/output
+    networks:
+      - banquito-switch-network
+      - banquito-net
+    logging:
+      options:
+        max-size: ${DOCKER_LOG_MAX_SIZE:-10m}
+        max-file: ${DOCKER_LOG_MAX_FILE:-5}
 
-  banquito-sw-lotes:
-    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-sw-lotes:latest
-    container_name: banquito-sw-lotes
-    ports:
-      - "8016:8016"
-    environment:
-      - SPRING_PROFILES_ACTIVE=prod
-      - SERVER_PORT=8016
-    env_file:
-      - .env
-      - .env.lotes
-    networks:
-      - banquito
+  routing-service:
+    image: andrescarrillo2001/banquito-sw-enrutamiento:latest
+    container_name: banquito-switch-routing-service
     restart: unless-stopped
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8016/actuator/health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    expose:
+      - "8082"
+    environment:
+      SERVER_PORT: 8082
+      DB_URL: jdbc:postgresql://${DB_HOST}:${DB_PORT:-5432}/SWITCH_ENRUTAMIENTO_DB${DB_JDBC_OPTIONS:-?sslmode=require}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      SPRING_SQL_INIT_MODE: ${SPRING_SQL_INIT_MODE:-never}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO:-validate}
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: ${SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE:-3}
+      SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE: ${SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE:-1}
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-guest}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
+    networks:
+      - banquito-switch-network
+    logging:
+      options:
+        max-size: ${DOCKER_LOG_MAX_SIZE:-10m}
+        max-file: ${DOCKER_LOG_MAX_FILE:-5}
 
-  banquito-sw-pagos-internos:
-    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-sw-pagos-internos:latest
-    container_name: banquito-sw-pagos-internos
-    ports:
-      - "8017:8017"
-    environment:
-      - SPRING_PROFILES_ACTIVE=prod
-      - SERVER_PORT=8017
-    env_file:
-      - .env
-      - .env.pagos-internos
-    networks:
-      - banquito
+  on-us-settlement-service:
+    image: andrescarrillo2001/banquito-sw-pagos-internos:latest
+    container_name: banquito-switch-on-us-settlement-service
     restart: unless-stopped
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8017/actuator/health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    expose:
+      - "8083"
+    environment:
+      SERVER_PORT: 8083
+      DB_URL: jdbc:postgresql://${DB_HOST}:${DB_PORT:-5432}/SWITCH_LIQUIDACION_ON_US_DB${DB_JDBC_OPTIONS:-?sslmode=require}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      SPRING_SQL_INIT_MODE: ${SPRING_SQL_INIT_MODE:-never}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO:-validate}
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: ${SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE:-3}
+      SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE: ${SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE:-1}
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-guest}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
+      CORE_KONG_BASE_URL: ${CORE_KONG_BASE_URL:-http://banquito-kong-gateway:8000}
+      CORE_KONG_AUTH_TOKEN: ${CORE_KONG_AUTH_TOKEN:-}
+      CORE_KONG_CLIENT_TOKEN_ENABLED: ${CORE_KONG_CLIENT_TOKEN_ENABLED:-true}
+      CORE_KONG_CLIENT_ID: ${CORE_KONG_CLIENT_ID:-switch-pagos-internos-service}
+      CORE_KONG_CLIENT_SECRET: ${CORE_KONG_CLIENT_SECRET}
+      CORE_KONG_REQUIRED_SCOPE: ${CORE_KONG_RESERVATION_CONSUME_REQUIRED_SCOPE:-core.reserve.consume}
+      CORE_KONG_RESERVATION_CONSUME_REQUIRED_SCOPE: ${CORE_KONG_RESERVATION_CONSUME_REQUIRED_SCOPE:-core.reserve.consume}
+      CORE_KONG_CLIENT_TOKEN_PATH: ${CORE_KONG_CLIENT_TOKEN_PATH:-/api/v1/auth/client-token}
+      CORE_KONG_CLIENT_TOKEN_REFRESH_SKEW_SECONDS: ${CORE_KONG_CLIENT_TOKEN_REFRESH_SKEW_SECONDS:-60}
+      CORE_SWITCH_DEFAULT_ACCOUNTING_DATE: ${CORE_SWITCH_DEFAULT_ACCOUNTING_DATE:-}
+    networks:
+      - banquito-switch-network
+      - banquito-net
+    logging:
+      options:
+        max-size: ${DOCKER_LOG_MAX_SIZE:-10m}
+        max-file: ${DOCKER_LOG_MAX_FILE:-5}
 
-  banquito-sw-pagos-externos:
-    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-sw-pagos-externos:latest
-    container_name: banquito-sw-pagos-externos
-    ports:
-      - "8018:8018"
-    environment:
-      - SPRING_PROFILES_ACTIVE=prod
-      - SERVER_PORT=8018
-    env_file:
-      - .env
-      - .env.pagos-externos
-    networks:
-      - banquito
+  billing-service:
+    image: andrescarrillo2001/banquito-sw-facturacion:latest
+    container_name: banquito-switch-billing-service
     restart: unless-stopped
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8018/actuator/health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    expose:
+      - "8084"
+    environment:
+      SERVER_PORT: 8084
+      DB_URL: jdbc:postgresql://${DB_HOST}:${DB_PORT:-5432}/SWITCH_COMISIONES_DB${DB_JDBC_OPTIONS:-?sslmode=require}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      SPRING_SQL_INIT_MODE: ${SPRING_SQL_INIT_MODE:-never}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO:-validate}
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: ${SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE:-3}
+      SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE: ${SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE:-1}
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-guest}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
+      RABBIT_EXCHANGE_BILLING: switch.billing.exchange
+      RABBIT_QUEUE_BILLING_BATCH_COMPLETED: switch.billing.batch-completed.queue
+      RABBIT_QUEUE_REPORTING_BILLING_COMPLETED: switch.reporting.billing-completed.queue
+      RABBIT_ROUTING_KEY_BATCH_LINES_COMPLETED: batch.lines.completed
+      RABBIT_ROUTING_KEY_BILLING_COMPLETED: billing.completed
+      CORE_KONG_BASE_URL: ${CORE_KONG_BASE_URL:-http://banquito-kong-gateway:8000}
+      CORE_KONG_AUTH_TOKEN: ${CORE_KONG_AUTH_TOKEN:-}
+      CORE_KONG_CLIENT_TOKEN_ENABLED: ${CORE_KONG_CLIENT_TOKEN_ENABLED:-true}
+      CORE_KONG_CLIENT_ID: ${CORE_KONG_CLIENT_ID:-switch-pagos-internos-service}
+      CORE_KONG_CLIENT_SECRET: ${CORE_KONG_CLIENT_SECRET}
+      CORE_KONG_REQUIRED_SCOPE: ${CORE_KONG_SERVICE_FEE_REQUIRED_SCOPE:-core.reserve.consume}
+      CORE_KONG_SERVICE_FEE_REQUIRED_SCOPE: ${CORE_KONG_SERVICE_FEE_REQUIRED_SCOPE:-core.reserve.consume}
+      CORE_KONG_CLIENT_TOKEN_PATH: ${CORE_KONG_CLIENT_TOKEN_PATH:-/api/v1/auth/client-token}
+      CORE_KONG_CLIENT_TOKEN_REFRESH_SKEW_SECONDS: ${CORE_KONG_CLIENT_TOKEN_REFRESH_SKEW_SECONDS:-60}
+      CORE_SWITCH_DEFAULT_ACCOUNTING_DATE: ${CORE_SWITCH_DEFAULT_ACCOUNTING_DATE:-}
+      SWITCH_BILLING_FALLBACK_COMPANY_RUC: ${SWITCH_BILLING_FALLBACK_COMPANY_RUC:-1790012345001}
+      SWITCH_BILLING_FALLBACK_SOURCE_ACCOUNT_NUMBER: ${SWITCH_BILLING_FALLBACK_SOURCE_ACCOUNT_NUMBER:-2200012345}
+    networks:
+      - banquito-switch-network
+      - banquito-net
+    logging:
+      options:
+        max-size: ${DOCKER_LOG_MAX_SIZE:-10m}
+        max-file: ${DOCKER_LOG_MAX_FILE:-5}
 
-  banquito-sw-reportes:
-    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-sw-reportes:latest
-    container_name: banquito-sw-reportes
-    ports:
-      - "8019:8019"
-    environment:
-      - SPRING_PROFILES_ACTIVE=prod
-      - SERVER_PORT=8019
-    env_file:
-      - .env
-      - .env.reportes
-    networks:
-      - banquito
+  reporting-service:
+    image: andrescarrillo2001/banquito-sw-reportes:latest
+    container_name: banquito-switch-reporting-service
     restart: unless-stopped
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8019/actuator/health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "${SWITCH_REPORTING_BIND_IP:-0.0.0.0}:${REPORTING_HOST_PORT:-8085}:8085"
+    expose:
+      - "8085"
+    environment:
+      SERVER_PORT: 8085
+      DB_URL: jdbc:postgresql://${DB_HOST}:${DB_PORT:-5432}/SWITCH_REPORTES_DB${DB_JDBC_OPTIONS:-?sslmode=require}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      SPRING_SQL_INIT_MODE: ${SPRING_SQL_INIT_MODE:-never}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO:-validate}
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: ${SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE:-3}
+      SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE: ${SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE:-1}
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-guest}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
+      RABBIT_EXCHANGE_BATCH: switch.batch.exchange
+      RABBIT_EXCHANGE_ROUTING: switch.routing.exchange
+      RABBIT_EXCHANGE_SETTLEMENT: switch.settlement.exchange
+      RABBIT_EXCHANGE_CLEARING: switch.clearing.exchange
+      RABBIT_EXCHANGE_BILLING: switch.billing.exchange
+      RABBIT_QUEUE_REPORTING_PAYMENT_LINES_OBSERVER: switch.reporting.payment-lines-observer.queue
+      RABBIT_QUEUE_REPORTING_ON_US_COMPLETED: switch.reporting.on-us-completed.queue
+      RABBIT_QUEUE_REPORTING_LINE_REJECTED: switch.reporting.line-rejected.queue
+      RABBIT_QUEUE_CLEARING_OFF_US: switch.clearing.off-us.queue
+      RABBIT_QUEUE_CLEARING_INCLUDED: switch.clearing.included.queue
+      RABBIT_QUEUE_BILLING_BATCH_COMPLETED: switch.billing.batch-completed.queue
+      RABBIT_QUEUE_REPORTING_BILLING_COMPLETED: switch.reporting.billing-completed.queue
+      RABBIT_ROUTING_KEY_PAYMENT_LINE_REQUESTED: payment.line.requested
+      RABBIT_ROUTING_KEY_ON_US_COMPLETED: payment.line.on-us.completed
+      RABBIT_ROUTING_KEY_ROUTED_OFF_US: payment.line.routed.off-us
+      RABBIT_ROUTING_KEY_OFF_US_INCLUDED: payment.line.off-us.included
+      RABBIT_ROUTING_KEY_LINE_REJECTED: payment.line.rejected
+      RABBIT_ROUTING_KEY_BATCH_LINES_COMPLETED: batch.lines.completed
+      RABBIT_ROUTING_KEY_BILLING_COMPLETED: billing.completed
+      SWITCH_FILES_OUTPUT_DIRECTORY: /app/output
+      SWITCH_FILES_CLEARING_DIRECTORY: /app/output/clearing
+      SWITCH_FILES_REPORTS_DIRECTORY: /app/output/reports
+      SWITCH_FILES_RECEIPTS_DIRECTORY: /app/output/receipts
+      NOTIFICATION_KONG_BASE_URL: ${NOTIFICATION_KONG_BASE_URL:-http://banquito-kong-gateway:8000}
+      NOTIFICATION_KONG_AUTH_TOKEN: ${NOTIFICATION_KONG_AUTH_TOKEN:-${CORE_KONG_AUTH_TOKEN:-}}
+      NOTIFICATION_KONG_CLIENT_TOKEN_ENABLED: ${NOTIFICATION_KONG_CLIENT_TOKEN_ENABLED:-${CORE_KONG_CLIENT_TOKEN_ENABLED:-true}}
+      NOTIFICATION_KONG_CLIENT_ID: ${NOTIFICATION_KONG_CLIENT_ID:-${CORE_KONG_CLIENT_ID:-switch-pagos-internos-service}}
+      NOTIFICATION_KONG_CLIENT_SECRET: ${NOTIFICATION_KONG_CLIENT_SECRET:-${CORE_KONG_CLIENT_SECRET}}
+      NOTIFICATION_KONG_REQUIRED_SCOPE: ${NOTIFICATION_KONG_REQUIRED_SCOPE:-notification.send}
+      NOTIFICATION_KONG_CLIENT_TOKEN_PATH: ${NOTIFICATION_KONG_CLIENT_TOKEN_PATH:-${CORE_KONG_CLIENT_TOKEN_PATH:-/api/v1/auth/client-token}}
+      NOTIFICATION_KONG_CLIENT_TOKEN_REFRESH_SKEW_SECONDS: ${NOTIFICATION_KONG_CLIENT_TOKEN_REFRESH_SKEW_SECONDS:-${CORE_KONG_CLIENT_TOKEN_REFRESH_SKEW_SECONDS:-60}}
+      GRPC_SERVER_PORT: 9095
+    volumes:
+      - switch_generated_files:/app/output
+    networks:
+      - banquito-switch-network
+      - banquito-net
+    logging:
+      options:
+        max-size: ${DOCKER_LOG_MAX_SIZE:-10m}
+        max-file: ${DOCKER_LOG_MAX_FILE:-5}
+
+  sftp-service:
+    image: andrescarrillo2001/banquito-sw-sft:latest
+    container_name: banquito-switch-sftp-service
+    restart: unless-stopped
+    depends_on:
+      batch-service:
+        condition: service_started
+    ports:
+      - "${SFTP_PORT:-2222}:2222"
+    environment:
+      SERVER_PORT: 8090
+      SFTP_ENABLED: ${SFTP_ENABLED:-true}
+      SFTP_PORT: 2222
+      SFTP_USER_EMPRESA_SIERRAAZUL_USERNAME: ${SFTP_USER_EMPRESA_SIERRAAZUL_USERNAME:-empresa.sierraazul}
+      SFTP_USER_EMPRESA_SIERRAAZUL_PASSWORD: ${SFTP_USER_EMPRESA_SIERRAAZUL_PASSWORD:-Password123!}
+      SFTP_USER_EMPRESA_SIERRAAZUL_COMPANY_RUC: ${SFTP_USER_EMPRESA_SIERRAAZUL_COMPANY_RUC:-1792103456001}
+      SFTP_BASE_DIRECTORY: /app/sftp
+      SFTP_UPLOAD_DIRECTORY: /app/sftp/upload
+      SFTP_PROCESSED_DIRECTORY: /app/sftp/processed
+      SFTP_REJECTED_DIRECTORY: /app/sftp/rejected
+      BATCH_SERVICE_BASE_URL: ${BATCH_SERVICE_BASE_URL:-http://batch-service:8081}
+      BATCH_SERVICE_UPLOAD_PATH: ${BATCH_SERVICE_UPLOAD_PATH:-/api/v1/batches/upload}
+    volumes:
+      - switch_sftp_data:/app/sftp
+    networks:
+      - banquito-switch-network
+    logging:
+      options:
+        max-size: ${DOCKER_LOG_MAX_SIZE:-10m}
+        max-file: ${DOCKER_LOG_MAX_FILE:-5}
 
 networks:
-  banquito:
+  banquito-switch-network:
     driver: bridge
+  banquito-net:
+    external: true
+    name: banquito-net
+
+volumes:
+  switch_rabbitmq_data:
+  switch_generated_files:
+  switch_sftp_data:

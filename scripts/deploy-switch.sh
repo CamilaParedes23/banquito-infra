@@ -52,27 +52,30 @@ case "$SERVICE" in
         docker compose up -d
         echo -e "${GREEN} Todos los servicios desplegados${NC}"
         ;;
-    banquito-sw-enrutamiento|enrutamiento)
-        deploy_service "banquito-sw-enrutamiento"
+    routing-service|banquito-sw-enrutamiento|enrutamiento)
+        deploy_service "routing-service"
         ;;
-    banquito-sw-facturacion|facturacion)
-        deploy_service "banquito-sw-facturacion"
+    billing-service|banquito-sw-facturacion|facturacion)
+        deploy_service "billing-service"
         ;;
-    banquito-sw-lotes|lotes)
-        deploy_service "banquito-sw-lotes"
+    batch-service|banquito-sw-lotes|lotes)
+        deploy_service "batch-service"
         ;;
-    banquito-sw-pagos-internos|pagos-internos)
-        deploy_service "banquito-sw-pagos-internos"
+    on-us-settlement-service|banquito-sw-pagos-internos|pagos-internos)
+        deploy_service "on-us-settlement-service"
         ;;
-    banquito-sw-pagos-externos|pagos-externos)
-        deploy_service "banquito-sw-pagos-externos"
+    reporting-service|banquito-sw-reportes|reportes)
+        deploy_service "reporting-service"
         ;;
-    banquito-sw-reportes|reportes)
-        deploy_service "banquito-sw-reportes"
+    rabbitmq)
+        deploy_service "rabbitmq"
+        ;;
+    sftp-service|sftp)
+        deploy_service "sftp-service"
         ;;
     *)
         echo -e "${RED} Servicio no reconocido: $SERVICE${NC}"
-        echo -e "${YELLOW}Servicios disponibles: all, enrutamiento, facturacion, lotes, pagos-internos, pagos-externos, reportes${NC}"
+        echo -e "${YELLOW}Servicios disponibles: all, routing-service (enrutamiento), billing-service (facturacion), batch-service (lotes), on-us-settlement-service (pagos-internos), reporting-service (reportes), rabbitmq, sftp-service (sftp)${NC}"
         exit 1
         ;;
 esac

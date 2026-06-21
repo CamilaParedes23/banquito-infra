@@ -21,7 +21,7 @@ jobs:
       - name: Deploy Switch Frontend service
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ secrets.GCP_VM_HOST }}
+          host: ${{ secrets.FRONT_VM_HOST }}
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_SSH_KEY }}
           script: |
