@@ -3,7 +3,7 @@ services:
   # CORE BANCA WEB
   # ==========================================
   core-banca-web:
-    image: andrescarrillo2001/banquito-core-bancaweb-fronend:fix-api-20260621
+    image: andrescarrillo2001/banquito-core-bancaweb-fronend:prod
     container_name: banquito-core-banca-web
     ports:
       - "3000:3000"
@@ -23,7 +23,7 @@ services:
   # ==========================================
   core-ventanilla-frontend:
 
-    image: andrescarrillo2001/banquito-core-ventanilla-frontend:latest1
+    image: andrescarrillo2001/banquito-core-ventanilla-frontend:prod
     container_name: banquito-core-ventanilla-frontend
 
     ports:
