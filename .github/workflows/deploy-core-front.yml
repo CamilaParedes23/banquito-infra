@@ -21,7 +21,7 @@ jobs:
       - name: Deploy Core Frontend services
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ secrets.FRO_VM_HOST }}
+          host: ${{ secrets.FRONT_VM_HOST }}
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_SSH_KEY }}
           script: |
