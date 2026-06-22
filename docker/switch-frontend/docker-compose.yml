@@ -1,6 +1,6 @@
 services:
   frontend-switch:
-    image: andrescarrillo2001/banquito-sw-frontend:latest
+    image: andrescarrillo2001/banquito-sw-frontend:prod
     container_name: banquito-frontend-switch
     restart: unless-stopped
 
