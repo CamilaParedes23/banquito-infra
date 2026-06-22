@@ -1,26 +1,28 @@
-version: '3.8'
-
 services:
-  # Switch Frontend Service
-  banquito-sw-frontend:
-    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-sw-frontend:latest
-    container_name: banquito-sw-frontend
-    ports:
-      - "3002:3000"
-    environment:
-      - NODE_ENV=production
-      - REACT_APP_API_URL=http://localhost:8080
+  frontend-switch:
+    image: andrescarrillo2001/banquito-sw-frontend:latest
+    container_name: banquito-frontend-switch
+    restart: unless-stopped
+
     env_file:
       - .env
+
+    ports:
+      - "${FRONTEND_SWITCH_PORT:-3002}:3002"
+
+    environment:
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL}
+      VITE_BASE_PATH: ${VITE_BASE_PATH}
+      VITE_ALLOWED_HOSTS: ${VITE_ALLOWED_HOSTS}
+      VITE_APP_NAME: ${VITE_APP_NAME}
+      VITE_APP_SUBTITLE: ${VITE_APP_SUBTITLE}
+      VITE_ENVIRONMENT: ${VITE_ENVIRONMENT}
+      VITE_MOCK_AUTH_ENABLED: ${VITE_MOCK_AUTH_ENABLED}
+
     networks:
-      - banquito
-    restart: unless-stopped
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:3000" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      - banquito-net
 
 networks:
-  banquito:
-    driver: bridge
+  banquito-net:
+    external: true
+    name: banquito-net
