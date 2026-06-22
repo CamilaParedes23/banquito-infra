@@ -23,7 +23,7 @@ services:
   # ==========================================
   core-ventanilla-frontend:
 
-    image: andrescarrillo2001/banquito-core-ventanilla-frontend:prod
+    image: kslechon/banquito-core-ventanilla-fronend:prod
     container_name: banquito-core-ventanilla-frontend
 
     ports:
