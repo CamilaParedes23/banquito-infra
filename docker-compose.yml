@@ -5,7 +5,7 @@ services:
   # ============================================
   # CORE BACKEND SERVICES (Puerto 8081-8090)
   # ============================================
-  
+
   core-contable:
     image: ${DOCKER_USERNAME:-banquito}/banquito-core-contable:latest
     container_name: banquito-core-contable
@@ -145,7 +145,6 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-
 
   # ============================================
   # CORE FRONTEND SERVICES (Puerto 3000-3001)
