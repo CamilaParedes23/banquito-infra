@@ -31,7 +31,7 @@ deploy_service() {
     local svc=$1
     echo -e "${YELLOW} Tirando imagen: $svc${NC}"
     docker compose pull "$svc" || {
-        echo -e "${RED}❌ Error al tirar imagen: $svc${NC}"
+        echo -e "${RED}Error al tirar imagen: $svc${NC}"
         return 1
     }
     
