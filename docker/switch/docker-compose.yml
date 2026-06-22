@@ -29,7 +29,7 @@ services:
         max-file: ${DOCKER_LOG_MAX_FILE:-5}
 
   batch-service:
-    image: andrescarrillo2001/banquito-sw-lotes:latest
+    image: andrescarrillo2001/banquito-sw-lotes:prod
     container_name: banquito-switch-batch-service
     restart: unless-stopped
     depends_on:
@@ -87,7 +87,7 @@ services:
         max-file: ${DOCKER_LOG_MAX_FILE:-5}
 
   routing-service:
-    image: andrescarrillo2001/banquito-sw-enrutamiento:latest
+    image: andrescarrillo2001/banquito-sw-enrutamiento:prod
     container_name: banquito-switch-routing-service
     restart: unless-stopped
     depends_on:
@@ -116,7 +116,7 @@ services:
         max-file: ${DOCKER_LOG_MAX_FILE:-5}
 
   on-us-settlement-service:
-    image: andrescarrillo2001/banquito-sw-pagos-internos:latest
+    image: andrescarrillo2001/banquito-sw-pagos-internos:prod
     container_name: banquito-switch-on-us-settlement-service
     restart: unless-stopped
     depends_on:
@@ -156,7 +156,7 @@ services:
         max-file: ${DOCKER_LOG_MAX_FILE:-5}
 
   billing-service:
-    image: andrescarrillo2001/banquito-sw-facturacion:latest
+    image: andrescarrillo2001/banquito-sw-facturacion:prod
     container_name: banquito-switch-billing-service
     restart: unless-stopped
     depends_on:
@@ -203,7 +203,7 @@ services:
         max-file: ${DOCKER_LOG_MAX_FILE:-5}
 
   reporting-service:
-    image: andrescarrillo2001/banquito-sw-reportes:latest
+    image: andrescarrillo2001/banquito-sw-reportes:prod
     container_name: banquito-switch-reporting-service
     restart: unless-stopped
     depends_on:
@@ -269,7 +269,7 @@ services:
         max-file: ${DOCKER_LOG_MAX_FILE:-5}
 
   sftp-service:
-    image: andrescarrillo2001/banquito-sw-sft:latest
+    image: andrescarrillo2001/banquito-sw-sft:prod
     container_name: banquito-switch-sftp-service
     restart: unless-stopped
     depends_on:
