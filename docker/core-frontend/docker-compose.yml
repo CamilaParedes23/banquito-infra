@@ -1,7 +1,9 @@
 services:
-  # Core Frontend Services
+  # ==========================================
+  # CORE BANCA WEB
+  # ==========================================
   core-banca-web:
-    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-bancaweb-fronend:fix-api-20260621
+    image: andrescarrillo2001/banquito-core-bancaweb-fronend:fix-api-20260621
     container_name: banquito-core-banca-web
     ports:
       - "3000:3000"
@@ -16,16 +18,25 @@ services:
       timeout: 10s
       retries: 3
 
+  # ==========================================
+  # CORE VENTANILLA
+  # ==========================================
   core-ventanilla-frontend:
-    image: ${DOCKER_USERNAME:-andrescarrillo2001}/banquito-core-ventanilla-fronend:latest
+
+    image: banquito-core-ventanilla-frontend:latest1
     container_name: banquito-core-ventanilla-frontend
+
     ports:
       - "3001:3001"
+
     env_file:
       - .env
+
     networks:
       - banquito
+
     restart: unless-stopped
+
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:3001" ]
       interval: 30s
